@@ -1,0 +1,63 @@
+services:
+  nessie:
+    image: projectnessie/nessie:0.76.6
+    container_name: nessie
+    restart: unless-stopped
+    depends_on:
+      - mongo
+    env_file:
+      - path: .env
+        required: false
+      - path: ../stack.env # optional override
+        required: false
+    volumes:
+      - ./nessie-data:/nessie/data
+    ports:
+      - "19120:19120"
+    networks:
+      - intro-network
+
+  minio:
+    image: minio/minio:RELEASE.2024-10-02T17-50-41Z
+    container_name: minio
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+      - path: ../stack.env # optional override
+        required: false
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - ./minio-data:/minio-data
+    entrypoint: >
+      /bin/sh -c "
+      minio server /data --console-address ':9001' &
+      sleep 5;
+      mc alias set myminio http://localhost:9000 admin password;
+      mc mb myminio/datalake;
+      mc mb myminio/warehouse;
+      tail -f /dev/null"
+    networks:
+      - intro-network
+
+  dremio:
+    image: dremio/dremio-oss:25.1
+    ports:
+      - 9047:9047
+      - 31010:31010
+    container_name: dremio
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+      - path: ../stack.env # optional override
+        required: false
+    volumes:
+      - ./dremio-data:/opt/dremio/data
+    networks:
+      - intro-network
+
+networks:
+  intro-network:
