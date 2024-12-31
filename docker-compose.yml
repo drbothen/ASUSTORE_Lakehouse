@@ -16,7 +16,33 @@ services:
       /bin/sh -c "
       minio server /data --console-address ':9001' &
       sleep 5;
-      mc alias set myminio http://localhost:9000 admin password;
+      mc alias set myminio http://localhost:9000 admin password;services:
+  minio:
+    image: minio/minio:RELEASE.2024-10-02T17-50-41Z
+    container_name: minio
+    restart: unless-stopped
+    environment:
+      MINIO_ROOT_USER: ${ASUSTORE_MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${ASUSTORE_MINIO_ROOT_PASSWORD}
+      MINIO_DOMAIN: ${ASUSTORE_MINIO_DOMAIN}
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - ./volume1/Docker/minio/data:/minio-data
+    entrypoint: >
+      /bin/sh -c "
+      minio server /data --console-address ':9001' &
+      sleep 5;
+      mc alias set myminio http://localhost:9000 ${MINIO_ROOT_USER} ${MINIO_ROOT_PASSWORD};
+      mc mb myminio/datalake;
+      mc mb myminio/warehouse;
+      tail -f /dev/null"
+    networks:
+      - intro-network
+
+networks:
+  intro-network:
       mc mb myminio/datalake;
       mc mb myminio/warehouse;
       tail -f /dev/null"
