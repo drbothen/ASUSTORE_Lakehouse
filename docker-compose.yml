@@ -4,9 +4,9 @@ services:
     container_name: minio
     restart: unless-stopped
     environment:
-      MINIO_ROOT_USER: admin
-      MINIO_ROOT_PASSWORD: password
-      MINIO_DOMAIN: minio
+      MINIO_ROOT_USER: ${ASUSTORE_MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${ASUSTORE_MINIO_ROOT_PASSWORD}
+      MINIO_DOMAIN: ${ASUSTORE_MINIO_DOMAIN}
     ports:
       - "9000:9000"
       - "9001:9001"
