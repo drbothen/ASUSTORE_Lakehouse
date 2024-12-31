@@ -25,11 +25,3 @@ services:
 
 networks:
   intro-network:
-      mc mb myminio/datalake;
-      mc mb myminio/warehouse;
-      tail -f /dev/null"
-    networks:
-      - intro-network
-
-networks:
-  intro-network:
