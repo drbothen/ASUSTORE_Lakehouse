@@ -14,12 +14,33 @@ services:
       - "9001:9001"
     volumes:
       - /volume1/Docker/minio/data:/data
-    entrypoint: >
-      /bin/sh -c "
-      minio server /data --console-address ':9001' &
-      tail -f /dev/null"
+    command: minio server /data --console-address ':9001'
+#    entrypoint: >
+#      /bin/sh -c "
+#      minio server /data --console-address ':9001' &
+#      tail -f /dev/null"
     networks:
       - intro-network
+
+#  init:
+#    image: minio/mc
+#    depends_on:
+#      - minio
+#    entrypoint: /bin/sh
+#    environment:
+#      MINIO_BUCKET: ${MINIO_BUCKET}
+#      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+#      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+#    command: >
+#      -c "
+#      while ! nc -z minio 9000; do echo 'Wait minio to startup...' && sleep 0.1; done;
+#      sleep 5 &&
+#      mc alias set myminio http://minio:9000 $MINIO_ACCESS_KEY $MINIO_SECRET_KEY &&
+#      mc rm -r --force myminio/$MINIO_BUCKET || true &&
+#      mc mb myminio/$MINIO_BUCKET &&
+#      mc policy set download myminio/$MINIO_BUCKET
+#      "
+#    network_mode: "service:minio"
 
 networks:
   intro-network:
