@@ -34,7 +34,7 @@ services:
     command: >
       -c "
       echo 'Bucket: $$MINIO_BUCKET';
-      echo \"Access Key: $MINIO_ACCESS_KEY\";
+      echo "Access Key: $MINIO_ACCESS_KEY";
       echo 'Secret Key: $$MINIO_SECRET
       echo 'Check if minio is up';
       until mc alias set myminio http://minio:9000 $MINIO_ACCESS_KEY $MINIO_SECRET_KEY; do
