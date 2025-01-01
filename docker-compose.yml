@@ -13,7 +13,7 @@ services:
       - "9001:9001"
     volumes:
       - /volume1/Docker/minio/data:/data
-      - ./minio/entrypoint.sh:/usr/local/bin/entrypoint.sh
+      - ./entrypoint.sh:/usr/local/bin/entrypoint.sh
     entrypoint: /usr/local/bin/entrypoint.sh
     networks:
       - intro-network
