@@ -32,7 +32,7 @@ services:
       MINIO_ACCESS_KEY: ${ASUSTORE_MINIO_ROOT_USER}
       MINIO_SECRET_KEY: ${ASUSTORE_MINIO_ROOT_PASSWORD}
     command: >
-      -c '
+      -c "
       echo "Bucket: ${MINIO_BUCKET}";
       echo "Access Key: ${MINIO_ACCESS_KEY}";
       echo "Secret Key: ${MINIO_SECRET_KEY}";
@@ -44,7 +44,7 @@ services:
       mc rm -r --dangerous --force myminio/"${MINIO_BUCKET}" || true;
       mc mb myminio/"${MINIO_BUCKET}";
       mc policy set download myminio/"${MINIO_BUCKET}";
-      '
+      "
     network_mode: "service:minio"
 
 networks:
