@@ -8,6 +8,8 @@ services:
       MINIO_ROOT_PASSWORD: ${ASUSTORE_MINIO_ROOT_PASSWORD}
       MINIO_DOMAIN: ${ASUSTORE_MINIO_DOMAIN}
       DEBUG: ${ASUSTORE_MINIO_DEBUG}
+      MAX_RETRIES: ${ASUSTORE_MINIO_MAX_RETRIES}
+      RETRY_INTERVAL: ${ASUSTORE_MINIO_RETRY_INTERVAL}
     user: "0:0"
     ports:
       - "9000:9000"
@@ -36,7 +38,7 @@ services:
         
         if [ -z "$MINIO_ROOT_USER" ] || [ -z "$MINIO_ROOT_PASSWORD" ]; then
         error_log "MINIO_ROOT_USER and MINIO_ROOT_PASSWORD must be set. Exiting..."
-        exit 1
+        #exit 1
         fi
         
         start_minio() {
@@ -72,7 +74,7 @@ services:
         retries=$((retries+1))
         if [ $retries -ge $MAX_RETRIES ]; then
         error_log "Failed to create bucket $bucket_name after $MAX_RETRIES attempts. Exiting..."
-        exit 1
+        #exit 1
         fi
         log "Retrying bucket creation ($bucket_name) ($retries/$MAX_RETRIES)..."
         sleep $RETRY_INTERVAL
