@@ -22,25 +22,25 @@ services:
     networks:
       - intro-network
 
-#  init:
-#    image: minio/mc
-#    depends_on:
-#      - minio
-#    entrypoint: /bin/sh
-#    environment:
-#      MINIO_BUCKET: ${MINIO_BUCKET}
-#      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
-#      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
-#    command: >
-#      -c "
-#      while ! nc -z minio 9000; do echo 'Wait minio to startup...' && sleep 0.1; done;
-#      sleep 5 &&
-#      mc alias set myminio http://minio:9000 $MINIO_ACCESS_KEY $MINIO_SECRET_KEY &&
-#      mc rm -r --force myminio/$MINIO_BUCKET || true &&
-#      mc mb myminio/$MINIO_BUCKET &&
-#      mc policy set download myminio/$MINIO_BUCKET
-#      "
-#    network_mode: "service:minio"
+  init:
+    image: minio/mc
+    depends_on:
+      - minio
+    entrypoint: /bin/sh
+    environment:
+      MINIO_BUCKET: "mybucket"
+      MINIO_ACCESS_KEY: ${ASUSTORE_MINIO_ROOT_USER}
+      MINIO_SECRET_KEY: ${ASUSTORE_MINIO_ROOT_PASSWORD}
+    command: >
+      -c "
+      while ! nc -z minio 9000; do echo 'Wait minio to startup...' && sleep 0.1; done;
+      sleep 5 &&
+      mc alias set myminio http://minio:9000 $MINIO_ACCESS_KEY $MINIO_SECRET_KEY &&
+      mc rm -r --force myminio/$MINIO_BUCKET || true &&
+      mc mb myminio/$MINIO_BUCKET &&
+      mc policy set download myminio/$MINIO_BUCKET
+      "
+    network_mode: "service:minio"
 
 networks:
   intro-network:
