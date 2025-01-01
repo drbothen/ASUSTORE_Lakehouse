@@ -14,17 +14,6 @@ services:
       - "9001:9001"
     volumes:
       - /volume1/Docker/minio/data:/data
-    entrypoint: >
-      /bin/sh -c "
-      echo 'user: $MINIO_ROOT_USER';
-      echo 'password: $MINIO_ROOT_PASSWORD';
-      minio server /data --console-address ':9001' &
-      sleep 5;
-      mc alias set myminio http://localhost:9000 $MINIO_ROOT_USER $MINIO_ROOT_PASSWORD;
-      sleep 5;
-      mc mb myminio/datalake;
-      mc mb myminio/warehouse;
-      tail -f /dev/null"
     networks:
       - intro-network
 
