@@ -33,7 +33,7 @@ services:
       MINIO_SECRET_KEY: ${ASUSTORE_MINIO_ROOT_PASSWORD}
     command: >
       -c "
-      echo 'Bucket: ${MINIO_BUCKET}';
+      echo "Bucket: ${MINIO_BUCKET}";
       echo 'Access Key: ${MINIO_ACCESS_KEY}';
       echo 'Secret Key: ${MINIO_SECRET_KEY}';
       echo 'Check if minio is up';
