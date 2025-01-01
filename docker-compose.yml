@@ -33,7 +33,7 @@ services:
       MINIO_SECRET_KEY: ${ASUSTORE_MINIO_ROOT_PASSWORD}
     command: >
       -c "
-      printenv | grep MINIO
+      printenv
       "
     network_mode: "service:minio"
 
