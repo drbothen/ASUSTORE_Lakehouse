@@ -33,9 +33,9 @@ services:
       MINIO_SECRET_KEY: ${ASUSTORE_MINIO_ROOT_PASSWORD}
     command: >
       -c "
-      echo 'Bucket: $MINIO_BUCKET';
-      echo 'Access Key: $MINIO_ACCESS
-      echo 'Secret Key: $MINIO_SECRET
+      echo 'Bucket: $$MINIO_BUCKET';
+      echo 'Access Key: $$MINIO_ACCESS
+      echo 'Secret Key: $$MINIO_SECRET
       echo 'Check if minio is up';
       until mc alias set myminio http://minio:9000 $MINIO_ACCESS_KEY $MINIO_SECRET_KEY; do
       echo 'Wait minio to startup...' && sleep 0.1;
