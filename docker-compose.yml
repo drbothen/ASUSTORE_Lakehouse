@@ -114,11 +114,11 @@ services:
       minio:
         condition: service_healthy
     environment:
-      QUARKUS_PROFILE: prod
-      QUARKUS_HTTP_PORT: 19120
-      QUARKUS_LOG_LEVEL: INFO
-      OTEL_TRACES_EXPORTER: none
-      QUARKUS_OIDC_ENABLED: false
+      QUARKUS_PROFILE: ${LH_NESSIE_QUARKUS_PROFILE}
+      QUARKUS_HTTP_PORT: ${LH_NESSIE_API_PORT}
+      QUARKUS_LOG_LEVEL: ${LH_NESSIE_LOG_LEVEL}
+      OTEL_TRACES_EXPORTER: ${LH_NESSIE_OTEL_TRACES_EXPORTER}
+      QUARKUS_OIDC_ENABLED: ${LH_NESSIE_OIDC_ENABLED}
       #QUARKUS_OIDC_AUTH_SERVER_URL: ""
       # True Production should be MONGODB
       nessie.version.store.type: ROCKSDB
@@ -134,6 +134,7 @@ services:
     networks:
       - intro-network
     healthcheck:
+      # Should be the container information not external
       test: ["CMD", "curl", "-f", "http://localhost:9000/q/health/live"]
       interval: 30s
       timeout: 10s
