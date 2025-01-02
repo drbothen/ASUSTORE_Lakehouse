@@ -118,7 +118,7 @@ services:
       QUARKUS_LOG_LEVEL: INFO
       OTEL_TRACES_EXPORTER: none
       QUARKUS_OIDC_ENABLED: false
-      QUARKUS_OIDC_AUTH_SERVER_URL: ""
+      #QUARKUS_OIDC_AUTH_SERVER_URL: ""
       # True Production should be MONGODB
       nessie.version.store.type: ROCKSDB
       nessie.version.store.persist.rocks.database-path: /nessie/db
