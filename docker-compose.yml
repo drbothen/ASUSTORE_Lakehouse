@@ -76,20 +76,18 @@ services:
           memory: ${LH_MINIO_MEMORY_RESERVATION:-1g}
     labels:
       - "traefik.enable=true"
-      # API
-      - "traefik.http.routers.minio-api.entrypoints=web"
+      # MinIO API
+      - "traefik.http.middlewares.minio-api-stripprefix.stripprefix.prefixes=/"
       - "traefik.http.routers.minio-api.rule=Host(`minio.flowloom.com`)"
-      - "traefik.http.routers.minio-api.service=minio-api"
-      - "traefik.http.services.minio-api.loadbalancer.server.port=9000"
-      - "traefik.http.routers.minio-api.service=minio-api"
-      - "traefik.http.services.minio-api.loadbalancer.passHostHeader=true"
-      # Console
-      - "traefik.http.routers.minio-console.entrypoints=web"
+      - "traefik.http.routers.minio-api.entrypoints=web"
+      - "traefik.http.routers.minio-api.service=minio-api-service"
+      - "traefik.http.services.minio-api-service.loadbalancer.server.port=9000"
+      # MinIO Console
+      - "traefik.http.middlewares.minio-console-stripprefix.stripprefix.prefixes=/"
       - "traefik.http.routers.minio-console.rule=Host(`minio-console.flowloom.com`)"
-      - "traefik.http.routers.minio-console.service=minio-console"
-      - "traefik.http.services.minio-console.loadbalancer.server.port=9001"
-      - "traefik.http.routers.minio-console.service=minio-console"
-      - "traefik.http.services.minio-console.loadbalancer.passHostHeader=true"
+      - "traefik.http.routers.minio-console.entrypoints=web"
+      - "traefik.http.routers.minio-console.service=minio-console-service"
+      - "traefik.http.services.minio-console-service.loadbalancer.server.port=9001"
 
   minio-init:
     image: minio/mc
