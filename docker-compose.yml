@@ -176,6 +176,10 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.nessie.rule=Host(`nessie.yourdomain.com`)"
+      - "traefik.http.services.nessie.loadbalancer.server.port=19120"
 
   dremio:
     image: dremio/dremio-oss:25.2
