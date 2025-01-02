@@ -45,7 +45,7 @@ services:
         echo 'No buckets defined in MINIO_BUCKETS';
         exit 1;
       fi;
-      IFS=',' read -ra BUCKETS <<< \"$$MINIO_BUCKETS)\";
+      IFS=',' read -ra BUCKETS <<< \"$$MINIO_BUCKETS\";
       for BUCKET in \"\$${BUCKETS[@]}\"; do
         echo \"Processing bucket: $$BUCKET\";
         if ! mc ls myminio/\$$BUCKET > /dev/null 2>&1; then
