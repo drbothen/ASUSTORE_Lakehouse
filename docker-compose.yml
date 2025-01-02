@@ -48,6 +48,8 @@ services:
           echo \"Bucket \$$BUCKET already exists, skipping creation.\";
         fi;
       done;
+      echo 'Bucket creation complete';
+      echo 'MinIO initialization complete';
       "
     network_mode: "service:minio"
 
