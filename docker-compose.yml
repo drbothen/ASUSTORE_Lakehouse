@@ -35,7 +35,7 @@ services:
       -c "
       echo ""Bucket: $(printenv MINIO_BUCKET)"";
       echo ""Access Key: $(printenv MINIO_ACCESS_KEY)"";
-      echo ""Secret Key: $(printenv MINIO_SECRET)"";
+      echo ""Secret Key: $(printenv MINIO_SECRET_KEY)"";
       echo 'Check if minio is up';
       until mc alias set myminio http://minio:9000 $(printenv MINIO_ACCESS_KEY) $(printenv MINIO_SECRET_KEY); do
       echo 'Wait minio to startup...' && sleep 0.1;
