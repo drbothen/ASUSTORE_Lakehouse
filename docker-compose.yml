@@ -33,6 +33,7 @@ services:
       MINIO_SECRET_KEY: ${ASUSTORE_MINIO_ROOT_PASSWORD}
     command: >
       -c "
+      env;
       echo 'Access Key - $MINIO_ACCESS_KEY';
       echo 'Secret Key - $MINIO_SECRET_KEY';
       "
