@@ -35,46 +35,74 @@ services:
         reservations:
           memory: ${LH_MINIO_MEMORY_RESERVATION:-1g}
 
+#  minio-init:
+#    image: minio/mc
+#    depends_on:
+#      minio:
+#        condition: service_healthy
+#    entrypoint: /bin/bash
+#    environment:
+#      MINIO_BUCKETS: ${LH_MINIO_DEFAULT_BUCKETS} # Comma-separated list of buckets
+#      MINIO_ACCESS_KEY: ${LH_MINIO_ROOT_USER}
+#      MINIO_SECRET_KEY: ${LH_MINIO_ROOT_PASSWORD}
+#      # Optional configurations with defaults
+#      BUCKET_VERSIONING: ${LH_MINIO_BUCKET_VERSIONING:-false}
+#      BUCKET_PUBLIC_ACCESS: ${LH_MINIO_BUCKET_PUBLIC_ACCESS:-false}
+#      MAX_RETRY_ATTEMPTS: ${LH_MINIO_INIT_MAX_RETRIES:-30}
+#      RETRY_INTERVAL: ${LH_MINIO_INIT_RETRY_INTERVAL:-2}
+#    command: >
+#      -c "
+#      echo ""Buckets: $$MINIO_BUCKETS"";
+#      echo 'Check if MinIO is up';
+#      until mc alias set myminio http://minio:9000 $$MINIO_ACCESS_KEY $$MINIO_SECRET_KEY; do
+#        echo 'Waiting for MinIO to start...' && sleep 0.1;
+#      done;
+#      sleep 5;
+#      if [ -z \"$$MINIO_BUCKETS\" ]; then
+#        echo 'No buckets defined in MINIO_BUCKETS';
+#        exit 1;
+#      fi;
+#      IFS=',' read -ra BUCKETS <<< \"$$MINIO_BUCKETS\";
+#      for BUCKET in \"\$${BUCKETS[@]}\"; do
+#        echo \"Processing bucket: $$BUCKET\";
+#        if ! mc ls myminio/\$$BUCKET > /dev/null 2>&1; then
+#          mc mb myminio/\$$BUCKET;
+#        else
+#          echo \"Bucket \$$BUCKET already exists, skipping creation.\";
+#        fi;
+#      done;
+#      echo 'Bucket creation complete';
+#      echo 'MinIO initialization complete';
+#      "
+#    network_mode: "service:minio"
+
   minio-init:
-    image: minio/mc
+    image: minio/mc:latest
     depends_on:
       minio:
         condition: service_healthy
     entrypoint: /bin/bash
     environment:
-      MINIO_BUCKETS: ${LH_MINIO_DEFAULT_BUCKETS} # Comma-separated list of buckets
+      MINIO_BUCKETS: ${LH_MINIO_DEFAULT_BUCKETS}
       MINIO_ACCESS_KEY: ${LH_MINIO_ROOT_USER}
       MINIO_SECRET_KEY: ${LH_MINIO_ROOT_PASSWORD}
+      MINIO_HOST: minio
+      MINIO_PORT: 9000
       # Optional configurations with defaults
       BUCKET_VERSIONING: ${LH_MINIO_BUCKET_VERSIONING:-false}
       BUCKET_PUBLIC_ACCESS: ${LH_MINIO_BUCKET_PUBLIC_ACCESS:-false}
       MAX_RETRY_ATTEMPTS: ${LH_MINIO_INIT_MAX_RETRIES:-30}
       RETRY_INTERVAL: ${LH_MINIO_INIT_RETRY_INTERVAL:-2}
-    command: >
-      -c "
-      echo ""Buckets: $$MINIO_BUCKETS"";
-      echo 'Check if MinIO is up';
-      until mc alias set myminio http://minio:9000 $$MINIO_ACCESS_KEY $$MINIO_SECRET_KEY; do
-        echo 'Waiting for MinIO to start...' && sleep 0.1;
-      done;
-      sleep 5;
-      if [ -z \"$$MINIO_BUCKETS\" ]; then
-        echo 'No buckets defined in MINIO_BUCKETS';
-        exit 1;
-      fi;
-      IFS=',' read -ra BUCKETS <<< \"$$MINIO_BUCKETS\";
-      for BUCKET in \"\$${BUCKETS[@]}\"; do
-        echo \"Processing bucket: $$BUCKET\";
-        if ! mc ls myminio/\$$BUCKET > /dev/null 2>&1; then
-          mc mb myminio/\$$BUCKET;
-        else
-          echo \"Bucket \$$BUCKET already exists, skipping creation.\";
-        fi;
-      done;
-      echo 'Bucket creation complete';
-      echo 'MinIO initialization complete';
-      "
+    healthcheck:
+      test: ["CMD", "mc", "alias", "ls", "myminio"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    volumes:
+      - ./minio-init.sh:/minio-init.sh:ro
+    command: /minio-init.sh
     network_mode: "service:minio"
+    restart: on-failure:3
 
 
 networks:
