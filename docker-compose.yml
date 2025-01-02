@@ -23,7 +23,7 @@ services:
       - intro-network
 
   init:
-    image: ubuntu:latest
+    image: minio/mc
     depends_on:
       - minio
     entrypoint: bin/bash
@@ -36,6 +36,20 @@ services:
       env;
       echo ""Access Key - $(printenv MINIO_ACCESS_KEY)"";
       echo ""Secret Key - $(printenv MINIO_SECRET_KEY)"";
+      "
+      
+      -c "
+      echo ""Bucket: $(printenv MINIO_BUCKET)"";
+      echo ""Access Key: $(printenv MINIO_ACCESS_KEY)"";
+      echo ""Secret Key: $(printenv MINIO_SECRET)"";
+      echo 'Check if minio is up';
+      until mc alias set myminio http://minio:9000 $(printenv MINIO_ACCESS_KEY) $(printenv MINIO_SECRET_KEY); do
+      echo 'Wait minio to startup...' && sleep 0.1;
+      done;
+      sleep 5 &&
+      mc rm -r --dangerous --force myminio/$(printenv MINIO_BUCKET) || true &&
+      mc mb myminio/$(printenv MINIO_BUCKET) &&
+      mc policy set download myminio/$(printenv MINIO_BUCKET)
       "
     network_mode: "service:minio"
 
