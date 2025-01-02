@@ -34,8 +34,8 @@ services:
     command: >
       -c "
       echo ""Buckets: $$MINIO_BUCKETS"";
-      echo 'Access Key: $(printenv MINIO_ACCESS_KEY)';
-      echo 'Secret Key: $(printenv MINIO_SECRET_KEY)';
+      echo ""Access Key: $$MINIO_ACCESS_KEY"";
+      echo ""Secret Key: $$MINIO_SECRET_KEY"";
       echo 'Check if MinIO is up';
       until mc alias set myminio http://minio:9000 $(printenv MINIO_ACCESS_KEY) $(printenv MINIO_SECRET_KEY); do
         echo 'Waiting for MinIO to start...' && sleep 0.1;
