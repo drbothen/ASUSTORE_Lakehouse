@@ -263,9 +263,9 @@ services:
       - "traefik.tcp.routers.dremio-client.rule=HostSNI(`*`)"
       - "traefik.tcp.routers.dremio-client.service=dremio-client"
       - "traefik.tcp.services.dremio-client.loadbalancer.server.port=31010"
-      # Increased timeouts for long queries
-      - "traefik.http.middlewares.dremio-timeout.forwardauth.requestTimeout=3600"
-      - "traefik.http.routers.dremio.middlewares=dremio-timeout"
+#      # Increased timeouts for long queries
+#      - "traefik.http.middlewares.dremio-timeout.forwardauth.requestTimeout=3600"
+#      - "traefik.http.routers.dremio.middlewares=dremio-timeout"
 
   n8n:
     image: n8nio/n8n:1.73.1
