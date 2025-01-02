@@ -184,6 +184,7 @@ services:
       start_period: 40s
 
   n8n:
+    image: n8nio/n8n:1.73.1
     container_name: n8n
     #build: ./build/n8n
     restart: unless-stopped
