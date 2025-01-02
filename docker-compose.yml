@@ -106,7 +106,7 @@ services:
 #    restart: on-failure:3
 
   nessie:
-    image: projectnessie/nessie:0.101.3
+    image: bitnami/nessie:0.101.3
     container_name: nessie
     restart: unless-stopped
     depends_on:
