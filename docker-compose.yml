@@ -291,7 +291,7 @@ services:
     networks:
       - intro-network
     healthcheck:
-      test: ["CMD", "wget", "--spider", "--quiet", "http://127.0.0.1:5678/healthz"]
+      test: ["CMD", "wget", "--spider", "--quiet", "http://127.0.0.1:80/healthz"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -301,7 +301,7 @@ services:
       - "traefik.http.routers.n8n.entrypoints=web"
       - "traefik.http.routers.n8n.rule=Host(`n8n.flowloom.com`)"
       - "traefik.http.routers.n8n.service=n8n"
-      - "traefik.http.services.n8n.loadbalancer.server.port=5678"
+      - "traefik.http.services.n8n.loadbalancer.server.port=80"
       - "traefik.http.services.n8n.loadbalancer.passHostHeader=true"
 #      # Websocket support
 #      - "traefik.http.middlewares.n8n-websecure-headers.headers.customRequestHeaders.X-Forwarded-Proto=http"
