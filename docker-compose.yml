@@ -48,6 +48,8 @@ services:
       MINIO_ROOT_PASSWORD: ${LH_MINIO_ROOT_PASSWORD}
       MINIO_DOMAIN: ${LH_MINIO_DOMAIN}
       MINIO_DEFAULT_BUCKETS: ${LH_MINIO_BUCKETS}
+      MINIO_BROWSER_REDIRECT_URL: http://minio-console.flowloom.com
+      MINIO_SERVER_URL: http://minio.flowloom.com
 # TODO: Add these back in when we have a use case for them
 #      MINIO_SERVER_URL: ${LH_MINIO_SERVER_URL:-http://localhost:9000}
 #      MINIO_BROWSER_REDIRECT_URL: ${LH_MINIO_BROWSER_URL:-http://localhost:9001}
