@@ -21,6 +21,7 @@ services:
       - "--ping=true"
       - "--ping.entrypoint=ping"
       - "--entrypoints.ping.address=:8082"  # Dedicated port for ping endpoint
+      - "--providers.docker.network=intro-network"
       # Add these for HTTPS
       # - "--certificatesresolvers.myresolver.acme.httpchallenge=true"
       # - "--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web"
