@@ -77,11 +77,13 @@ services:
       - "traefik.http.routers.minio-api.rule=Host(`minio.flowloom.com`)"
       - "traefik.http.routers.minio-api.service=minio-api"
       - "traefik.http.services.minio-api.loadbalancer.server.port=9000"
+      - "traefik.http.routers.minio-api.service=minio-api"
       # Console
       - "traefik.http.routers.minio-console.entrypoints=web"
       - "traefik.http.routers.minio-console.rule=Host(`minio-console.flowloom.com`)"
       - "traefik.http.routers.minio-console.service=minio-console"
       - "traefik.http.services.minio-console.loadbalancer.server.port=9001"
+      - "traefik.http.routers.minio-console.service=minio-console"
 
   minio-init:
     image: minio/mc
