@@ -305,11 +305,11 @@ services:
       - "traefik.http.routers.n8n.service=n8n"
       - "traefik.http.services.n8n.loadbalancer.server.port=80"
       - "traefik.http.services.n8n.loadbalancer.passHostHeader=true"
-      # Websocket support
-      - "traefik.http.middlewares.n8n-websecure-headers.headers.customRequestHeaders.X-Forwarded-Proto=http"
-      - "traefik.http.routers.n8n.middlewares=n8n-websecure-headers"
-      # Increase timeouts for long-running workflows
-      - "traefik.http.middlewares.n8n-timeouts.forwardauth.requestTimeout=300"
+#      # Websocket support
+#      - "traefik.http.middlewares.n8n-websecure-headers.headers.customRequestHeaders.X-Forwarded-Proto=http"
+#      - "traefik.http.routers.n8n.middlewares=n8n-websecure-headers"
+#      # Increase timeouts for long-running workflows
+#      - "traefik.http.middlewares.n8n-timeouts.forwardauth.requestTimeout=300"
 
 networks:
   intro-network:
