@@ -10,8 +10,8 @@ services:
       MINIO_DEFAULT_BUCKETS: ${ASUSTORE_MINIO_BUCKETS}
     user: "0:0"
     ports:
-      - "9000:9000"
-      - "9001:9001"
+      - "${ASUSTORE_MINIO_API_PORT:-9000}:9000"
+      - "${ASUSTORE_MINIO_CONSOLE_PORT:-9001}:9001"
     volumes:
       - /volume1/Docker/minio/data:/data
       - /volume1/Docker/minio/config:/root/.minio
