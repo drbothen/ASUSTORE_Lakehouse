@@ -33,12 +33,6 @@ services:
       MINIO_SECRET_KEY: ${ASUSTORE_MINIO_ROOT_PASSWORD}
     command: >
       -c "
-      env;
-      echo ""Access Key - $(printenv MINIO_ACCESS_KEY)"";
-      echo ""Secret Key - $(printenv MINIO_SECRET_KEY)"";
-      "
-      
-      -c "
       echo ""Bucket: $(printenv MINIO_BUCKET)"";
       echo ""Access Key: $(printenv MINIO_ACCESS_KEY)"";
       echo ""Secret Key: $(printenv MINIO_SECRET)"";
