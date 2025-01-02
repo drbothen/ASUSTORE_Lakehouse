@@ -248,13 +248,21 @@ services:
       retries: 3
       start_period: 40s
     labels:
-      # TODO: expose the Client Port when we have a use case for it
       - "traefik.enable=true"
+      # Web UI
       - "traefik.http.routers.dremio.entrypoints=web"
       - "traefik.http.routers.dremio.rule=Host(`dremio.flowloom.com`)"
       - "traefik.http.routers.dremio.service=dremio"
       - "traefik.http.services.dremio.loadbalancer.server.port=9047"
       - "traefik.http.services.dremio.loadbalancer.passHostHeader=true"
+      # Client Port (ODBC/JDBC)
+      - "traefik.tcp.routers.dremio-client.entrypoints=dremio-client"
+      - "traefik.tcp.routers.dremio-client.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.dremio-client.service=dremio-client"
+      - "traefik.tcp.services.dremio-client.loadbalancer.server.port=31010"
+      # Increased timeouts for long queries
+      - "traefik.http.middlewares.dremio-timeout.forwardauth.requestTimeout=3600"
+      - "traefik.http.routers.dremio.middlewares=dremio-timeout"
 
   n8n:
     image: n8nio/n8n:1.73.1
