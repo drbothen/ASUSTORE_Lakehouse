@@ -186,9 +186,9 @@ services:
     volumes:
       - /volume1/Docker/nessie/data:/nessie/data
       - /volume1/Docker/nessie/db:/nessie/db
-    ports:
-      - "${LH_NESSIE_API_PORT:-19120}:19120"
-      - "${LH_NESSIE_MANAGEMENT_PORT:-9002}:9000"
+#    ports:
+#      - "${LH_NESSIE_API_PORT:-19120}:19120"
+#      - "${LH_NESSIE_MANAGEMENT_PORT:-9002}:9000"
     networks:
       - intro-network
     healthcheck:
@@ -200,8 +200,11 @@ services:
       start_period: 40s
     labels:
       - "traefik.enable=true"
+      - "traefik.http.routers.nessie.entrypoints=web"
       - "traefik.http.routers.nessie.rule=Host(`nessie.flowloom.com`)"
+      - "traefik.http.routers.nessie.service=nessie"
       - "traefik.http.services.nessie.loadbalancer.server.port=19120"
+      - "traefik.http.services.nessie.loadbalancer.passHostHeader=true"
 
   dremio:
     image: dremio/dremio-oss:25.2
