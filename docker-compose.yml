@@ -141,6 +141,21 @@ services:
       retries: 3
       start_period: 40s
 
+  dremio:
+    image: dremio/dremio-oss:25.2
+    ports:
+      - "${LH_DREMIO_CLIENT_ENDPOINT_PORT:-9047}:9047"
+      - "${LH_DREMIO_ALT_CLIENT_ENDPOINT_PORT:-31010}:31010"
+    container_name: dremio
+    restart: unless-stopped
+    user: "0:0"
+    environment:
+      - DREMIO_JAVA_SERVER_EXTRA_OPTS=-Dpaths.dist=file:///opt/dremio/data/dist
+    volumes:
+      - /volume1/Docker/dremio/data:/opt/dremio/data
+    networks:
+      - intro-network
+
 networks:
   intro-network:
 
