@@ -250,6 +250,10 @@ services:
       timeout: 10s
       retries: 3
       start_period: 30s
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.n8n.rule=Host(`n8n.flowloom.com`)"
+      - "traefik.http.services.n8n.loadbalancer.server.port=5678"
 
 networks:
   intro-network:
