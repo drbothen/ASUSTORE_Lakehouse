@@ -109,6 +109,7 @@ services:
     image: bitnami/nessie:0.101.3
     container_name: nessie
     restart: unless-stopped
+    user: "0:0"
     depends_on:
       minio:
         condition: service_healthy
@@ -128,7 +129,8 @@ services:
       - /volume1/Docker/nessie/data:/nessie/data
       - /volume1/Docker/nessie/db:/nessie/db
     ports:
-      - "19120:19120"
+      - "${LH_NESSIE_API_PORT:-19120}:19120"
+      - "${LH_NESSIE_MANAGEMENT_PORT:-9002}:9000"
     networks:
       - intro-network
     healthcheck:
