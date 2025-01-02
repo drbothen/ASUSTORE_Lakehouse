@@ -99,8 +99,8 @@ services:
       timeout: 5s
       retries: 3
     volumes:
-      - ./minio:/minio-init:ro
-    command: /minio-init/minio-init.sh
+      - ./minio:/minio/scripts:ro
+    command: /minio/scripts/minio-init.sh
     network_mode: "service:minio"
     restart: on-failure:3
 
