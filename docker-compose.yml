@@ -31,7 +31,11 @@ services:
       MINIO_BUCKET: "mybucket"
       MINIO_ACCESS_KEY: ${ASUSTORE_MINIO_ROOT_USER}
       MINIO_SECRET_KEY: ${ASUSTORE_MINIO_ROOT_PASSWORD}
-    command: -c "echo 'Access Key - ${ASUSTORE_MINIO_ROOT_USER}'; echo 'Secret Key - ${ASUSTORE_MINIO_ROOT_PASSWORD}';"
+    command: >
+      -c "
+      echo 'Access Key - ${ASUSTORE_MINIO_ROOT_USER}';
+      echo 'Secret Key - ${ASUSTORE_MINIO_ROOT_PASSWORD}';
+      "
     network_mode: "service:minio"
 
 networks:
