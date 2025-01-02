@@ -26,24 +26,31 @@ services:
     image: minio/mc
     depends_on:
       - minio
-    entrypoint: bin/bash
+    entrypoint: /bin/bash
     environment:
-      MINIO_BUCKET: "mybucket"
+      MINIO_BUCKETS: "mybucket1,mybucket2,mybucket3" # Comma-separated list of buckets
       MINIO_ACCESS_KEY: ${ASUSTORE_MINIO_ROOT_USER}
       MINIO_SECRET_KEY: ${ASUSTORE_MINIO_ROOT_PASSWORD}
     command: >
       -c "
-      echo ""Bucket: $(printenv MINIO_BUCKET)"";
-      echo ""Access Key: $(printenv MINIO_ACCESS_KEY)"";
-      echo ""Secret Key: $(printenv MINIO_SECRET_KEY)"";
-      echo 'Check if minio is up';
+      echo 'Buckets: $(printenv MINIO_BUCKETS)';
+      echo 'Access Key: $(printenv MINIO_ACCESS_KEY)';
+      echo 'Secret Key: $(printenv MINIO_SECRET_KEY)';
+      echo 'Check if MinIO is up';
       until mc alias set myminio http://minio:9000 $(printenv MINIO_ACCESS_KEY) $(printenv MINIO_SECRET_KEY); do
-      echo 'Wait minio to startup...' && sleep 0.1;
+        echo 'Waiting for MinIO to start...' && sleep 0.1;
       done;
-      sleep 5 &&
-      mc rm -r --dangerous --force myminio/$(printenv MINIO_BUCKET) || true &&
-      mc mb myminio/$(printenv MINIO_BUCKET) &&
-      mc policy set download myminio/$(printenv MINIO_BUCKET)
+      sleep 5;
+      IFS=',' read -ra BUCKETS <<< \"$(printenv MINIO_BUCKETS)\";
+      for BUCKET in \"${BUCKETS[@]}\"; do
+        echo \"Processing bucket: $BUCKET\";
+        if ! mc ls myminio/$BUCKET > /dev/null 2>&1; then
+          mc mb myminio/$BUCKET;
+          mc policy set download myminio/$BUCKET;
+        else
+          echo \"Bucket $BUCKET already exists, skipping creation.\";
+        fi;
+      done;
       "
     network_mode: "service:minio"
 
