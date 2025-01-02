@@ -193,12 +193,19 @@ services:
       - "${LH_N8N_CLIENT_ENDPOINT_PORT:-5678}:5678"
     environment:
       - NODE_FUNCTION_ALLOW_EXTERNAL=*
+      - N8N_SECURE_COOKIE=false
     volumes:
       - /volume1/Docker/n8n/data:/home/node/.n8n
       - /volume1/Docker/n8n/files:/files
     user: "0:0"
     networks:
       - intro-network
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:5678/healthz" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
 networks:
   intro-network:
