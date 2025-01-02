@@ -15,7 +15,7 @@ services:
     volumes:
       - /volume1/Docker/minio/data:/data
       - /volume1/Docker/minio/config:/root/.minio
-    command: minio server /data --console-address ':9001'
+    command: minio server /data --console-address ':${ASUSTORE_MINIO_CONSOLE_PORT:-9001}' --address ':${ASUSTORE_MINIO_API_PORT:-9000}'
     healthcheck:
       test: ["CMD", "mc", "ready", "local"]
       interval: 30s
