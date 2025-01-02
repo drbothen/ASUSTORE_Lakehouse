@@ -208,9 +208,9 @@ services:
 
   dremio:
     image: dremio/dremio-oss:25.2
-    ports:
-      - "${LH_DREMIO_CLIENT_ENDPOINT_PORT:-9047}:9047"
-      - "${LH_DREMIO_ALT_CLIENT_ENDPOINT_PORT:-31010}:31010"
+#    ports:
+#      - "${LH_DREMIO_CLIENT_ENDPOINT_PORT:-9047}:9047"
+#      - "${LH_DREMIO_ALT_CLIENT_ENDPOINT_PORT:-31010}:31010"
     container_name: dremio
     restart: unless-stopped
     user: "0:0"
@@ -262,8 +262,8 @@ services:
     #build: ./build/n8n
     restart: unless-stopped
     #command: "start --tunnel" # Optional, if you want to use the n8n hosted reverse tunnel for receiving webhooks
-    ports:
-      - "${LH_N8N_CLIENT_ENDPOINT_PORT:-5678}:5678"
+#    ports:
+#      - "${LH_N8N_CLIENT_ENDPOINT_PORT:-5678}:5678"
     environment:
       - NODE_FUNCTION_ALLOW_EXTERNAL=*
       - N8N_SECURE_COOKIE=false
