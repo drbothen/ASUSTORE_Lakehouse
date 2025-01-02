@@ -100,7 +100,7 @@ services:
       retries: 3
     volumes:
       - ./minio:/minio/scripts:ro
-    command: -c "ls -lanh /minio/scripts && echo 'Debug complete' && cat /minio/scripts/entrypoint.sh"
+    command: -c "ls -lanh /minio/scripts && echo 'Debug complete'"
     network_mode: "service:minio"
     restart: on-failure:3
 
