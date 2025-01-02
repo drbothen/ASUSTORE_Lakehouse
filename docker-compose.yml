@@ -206,8 +206,8 @@ services:
       - "traefik.http.services.nessie.loadbalancer.server.port=19120"
       - "traefik.http.services.nessie.loadbalancer.passHostHeader=true"
       # Increased timeout for larger operations
-      - "traefik.http.middlewares.nessie-timeout.forwardauth.requestTimeout=120"
-      - "traefik.http.routers.nessie.middlewares=nessie-timeout"
+#      - "traefik.http.middlewares.nessie-timeout.forwardauth.requestTimeout=120"
+#      - "traefik.http.routers.nessie.middlewares=nessie-timeout"
 
   dremio:
     image: dremio/dremio-oss:25.2
