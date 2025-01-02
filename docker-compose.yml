@@ -49,9 +49,9 @@ services:
 #      MINIO_BROWSER_REDIRECT_URL: ${LH_MINIO_BROWSER_URL:-http://localhost:9001}
 #      MINIO_API_CORS_ALLOW_ORIGIN: ${LH_MINIO_CORS_ORIGIN:-"*"}
     user: "0:0"
-    ports:
-      - "${LH_MINIO_API_PORT:-9000}:9000"
-      - "${LH_MINIO_CONSOLE_PORT:-9001}:9001"
+#    ports:
+#      - "${LH_MINIO_API_PORT:-9000}:9000"
+#      - "${LH_MINIO_CONSOLE_PORT:-9001}:9001"
     volumes:
       - /volume1/Docker/minio/data:/data
       - /volume1/Docker/minio/config:/root/.minio
