@@ -248,9 +248,13 @@ services:
       retries: 3
       start_period: 40s
     labels:
+      # TODO: expose the Client Port when we have a use case for it
       - "traefik.enable=true"
+      - "traefik.http.routers.dremio.entrypoints=web"
       - "traefik.http.routers.dremio.rule=Host(`dremio.flowloom.com`)"
+      - "traefik.http.routers.dremio.service=dremio"
       - "traefik.http.services.dremio.loadbalancer.server.port=9047"
+      - "traefik.http.services.dremio.loadbalancer.passHostHeader=true"
 
   n8n:
     image: n8nio/n8n:1.73.1
