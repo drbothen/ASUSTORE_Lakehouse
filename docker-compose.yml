@@ -134,7 +134,7 @@ services:
     networks:
       - intro-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:${LH_NESSIE_MANAGEMENT_PORT:-9002}/q/health/live"]
+      test: ["CMD", "curl", "-f", "http://nessie:${LH_NESSIE_MANAGEMENT_PORT:-9002}/q/health/live"]
       interval: 30s
       timeout: 10s
       retries: 3
