@@ -34,8 +34,8 @@ services:
     command: >
       -c "
       env;
-      echo ""Access Key - $(printenv MINIO_ACCESS_KEY)"";
-      echo 'Secret Key - $MINIO_SECRET_KEY';
+      echo ""Access Key - $MINIO_ACCESS_KEY"";
+      echo ""Secret Key - $MINIO_SECRET_KEY"";
       "
     network_mode: "service:minio"
 
