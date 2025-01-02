@@ -1,4 +1,30 @@
 services:
+  traefik:
+    image: traefik:v2.10
+    container_name: traefik
+    restart: unless-stopped
+    ports:
+      - "80:80"     # HTTP
+      - "443:443"   # HTTPS
+      - "8080:8080" # Traefik Dashboard
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /volume1/Docker/traefik/acme.json:/acme.json
+      - /volume1/Docker/traefik/config:/etc/traefik
+    command:
+      - "--api.insecure=true"  # Enable dashboard without auth - change in production
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      # Add these for HTTPS
+      # - "--certificatesresolvers.myresolver.acme.httpchallenge=true"
+      # - "--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web"
+      # - "--certificatesresolvers.myresolver.acme.email=your@email.com"
+      # - "--certificatesresolvers.myresolver.acme.storage=/acme.json"
+    networks:
+      - intro-network
+
   minio:
     image: minio/minio:RELEASE.2024-10-02T17-50-41Z
     container_name: minio
