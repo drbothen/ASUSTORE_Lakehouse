@@ -47,7 +47,7 @@ services:
       fi;
       IFS=',' read -ra BUCKETS <<< \"$(printenv MINIO_BUCKETS)\";
       for BUCKET in \"\$${BUCKETS[@]}\"; do
-        echo \"Processing bucket: $(printenv BUCKET)\";
+        echo \"Processing bucket: $${!BUCKET}\";
         if ! mc ls myminio/\$BUCKET > /dev/null 2>&1; then
           mc mb myminio/\$BUCKET;
           mc policy set download myminio/\$BUCKET;
