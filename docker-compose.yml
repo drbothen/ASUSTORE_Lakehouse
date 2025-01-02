@@ -22,20 +22,18 @@ services:
     networks:
       - intro-network
 
-  init:
+  minio-init:
     image: minio/mc
     depends_on:
       - minio
     entrypoint: /bin/bash
     environment:
-      MINIO_BUCKETS: "mybucket1,mybucket2,mybucket3" # Comma-separated list of buckets
+      MINIO_BUCKETS: ${ASUSTORE_MINIO_DEFAULT_BUCKETS} # Comma-separated list of buckets
       MINIO_ACCESS_KEY: ${ASUSTORE_MINIO_ROOT_USER}
       MINIO_SECRET_KEY: ${ASUSTORE_MINIO_ROOT_PASSWORD}
     command: >
       -c "
       echo ""Buckets: $$MINIO_BUCKETS"";
-      echo ""Access Key: $$MINIO_ACCESS_KEY"";
-      echo ""Secret Key: $$MINIO_SECRET_KEY"";
       echo 'Check if MinIO is up';
       until mc alias set myminio http://minio:9000 $$MINIO_ACCESS_KEY $$MINIO_SECRET_KEY; do
         echo 'Waiting for MinIO to start...' && sleep 0.1;
