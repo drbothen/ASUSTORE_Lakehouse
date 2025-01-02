@@ -150,13 +150,34 @@ services:
     restart: unless-stopped
     user: "0:0"
     environment:
-      - DREMIO_JAVA_SERVER_EXTRA_OPTS-Dpaths.dist=file:///opt/dremio/data/dist
+      # Core Configuration
+      - DREMIO_MAX_HEAP_MEMORY_SIZE_MB=4096
+      - DREMIO_MIN_HEAP_MEMORY_SIZE_MB=2048
+      - DREMIO_MAX_DIRECT_MEMORY_SIZE_MB=8192
+      - DREMIO_LOG_LEVEL=INFO
+
+      # Performance Tuning
+      - DREMIO_MAX_MEMORY_SIZE_MB=16384
+      - DREMIO_GC_OPTS=-XX:+UseG1GC -XX:G1HeapRegionSize=32M
+
+      # Network Configuration
+      - DREMIO_HOST=0.0.0.0
+      - DREMIO_HTTP_PORT=${LH_DREMIO_CLIENT_ENDPOINT_PORT:-9047}
+      - DREMIO_CLIENT_PORT=${LH_DREMIO_ALT_CLIENT_ENDPOINT_PORT:-31010}
+
+      # Security (if needed)
+      - DREMIO_ENABLE_TLS=false  # Set to true if using HTTPS
+      # - DREMIO_TLS_CERTIFICATE_PATH=/path/to/cert
+      # - DREMIO_TLS_KEY_PATH=/path/to/key
+
+      # Previous settings
+      - DREMIO_JAVA_SERVER_EXTRA_OPTS=-Dpaths.dist=file:///opt/dremio/data/dist
     volumes:
       - /volume1/Docker/dremio/data:/opt/dremio/data
     networks:
       - intro-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9047/api/v3/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:9047/apiv2/server_status"]
       interval: 30s
       timeout: 10s
       retries: 3
