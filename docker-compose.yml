@@ -67,7 +67,7 @@ services:
       - "traefik.http.routers.minio-api.service=minio-api"
       - "traefik.http.services.minio-api.loadbalancer.server.port=9000"
       # Console
-      - "traefik.http.routers.minio-console.rule=Host(`minio-console.yourdomain.com`)"
+      - "traefik.http.routers.minio-console.rule=Host(`minio-console.flowloom.com`)"
       - "traefik.http.routers.minio-console.service=minio-console"
       - "traefik.http.services.minio-console.loadbalancer.server.port=9001"
 
@@ -178,7 +178,7 @@ services:
       start_period: 40s
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.nessie.rule=Host(`nessie.yourdomain.com`)"
+      - "traefik.http.routers.nessie.rule=Host(`nessie.flowloom.com`)"
       - "traefik.http.services.nessie.loadbalancer.server.port=19120"
 
   dremio:
@@ -222,6 +222,10 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dremio.rule=Host(`dremio.flowloom.com`)"
+      - "traefik.http.services.dremio.loadbalancer.server.port=9047"
 
   n8n:
     image: n8nio/n8n:1.73.1
