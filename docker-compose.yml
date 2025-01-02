@@ -15,10 +15,6 @@ services:
     volumes:
       - /volume1/Docker/minio/data:/data
     command: minio server /data --console-address ':9001'
-#    entrypoint: >
-#      /bin/sh -c "
-#      minio server /data --console-address ':9001' &
-#      tail -f /dev/null"
     networks:
       - intro-network
 
