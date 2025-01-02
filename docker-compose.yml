@@ -150,11 +150,17 @@ services:
     restart: unless-stopped
     user: "0:0"
     environment:
-      - DREMIO_JAVA_SERVER_EXTRA_OPTS=-Dpaths.dist=file:///opt/dremio/data/dist
+      - DREMIO_JAVA_SERVER_EXTRA_OPTS-Dpaths.dist=file:///opt/dremio/data/dist
     volumes:
       - /volume1/Docker/dremio/data:/opt/dremio/data
     networks:
       - intro-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9047/api/v3/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
 networks:
   intro-network:
