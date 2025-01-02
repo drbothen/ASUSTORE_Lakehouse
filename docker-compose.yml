@@ -105,6 +105,32 @@ services:
 #    network_mode: "service:minio"
 #    restart: on-failure:3
 
+  nessie:
+    image: projectnessie/nessie:0.76.6
+    container_name: nessie
+    restart: unless-stopped
+    depends_on:
+      minio:
+        condition: service_healthy
+    environment:
+      QUARKUS_PROFILE: prod
+      QUARKUS_HTTP_PORT: 19120
+      QUARKUS_LOG_LEVEL: INFO
+      OTEL_TRACES_EXPORTER: none
+      # True Production should be MONGODB
+      nessie.version.store.type: ROCKSDB
+      nessie.version.store.persist.rocks.database-path: /nessie/db
+      # Only needed if using the MongoDB configuration
+#      quarkus.mongodb.connection-string: mongodb://root:password@mongo:27017
+    volumes:
+      - /volume1/Docker/nessie/data:/nessie/data
+      - /volume1/Docker/nessie/db:/nessie/db
+    ports:
+      - "19120:19120"
+    networks:
+      - intro-network
 
 networks:
   intro-network:
+
+
