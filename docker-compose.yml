@@ -48,8 +48,8 @@ services:
       MINIO_ROOT_PASSWORD: ${LH_MINIO_ROOT_PASSWORD}
       MINIO_DOMAIN: ${LH_MINIO_DOMAIN}
       MINIO_DEFAULT_BUCKETS: ${LH_MINIO_BUCKETS}
-      MINIO_BROWSER_REDIRECT_URL: http://minio-console.flowloom.com
-      MINIO_SERVER_URL: http://minio.flowloom.com
+      MINIO_BROWSER_REDIRECT_URL: http://minio.flowloom.com
+      MINIO_SERVER_URL: http://minio-console.flowloom.com
 # TODO: Add these back in when we have a use case for them
 #      MINIO_SERVER_URL: ${LH_MINIO_SERVER_URL:-http://localhost:9000}
 #      MINIO_BROWSER_REDIRECT_URL: ${LH_MINIO_BROWSER_URL:-http://localhost:9001}
@@ -78,18 +78,20 @@ services:
           memory: ${LH_MINIO_MEMORY_RESERVATION:-1g}
     labels:
       - "traefik.enable=true"
-      # MinIO API
-      - "traefik.http.middlewares.minio-api-stripprefix.stripprefix.prefixes=/"
-      - "traefik.http.routers.minio-api.rule=Host(`minio.flowloom.com`)"
+      # API
       - "traefik.http.routers.minio-api.entrypoints=web"
-      - "traefik.http.routers.minio-api.service=minio-api-service"
-      - "traefik.http.services.minio-api-service.loadbalancer.server.port=9000"
-      # MinIO Console
-      - "traefik.http.middlewares.minio-console-stripprefix.stripprefix.prefixes=/"
-      - "traefik.http.routers.minio-console.rule=Host(`minio-console.flowloom.com`)"
+      - "traefik.http.routers.minio-api.rule=Host(`minio.flowloom.com`)"
+      - "traefik.http.routers.minio-api.service=minio-api"
+      - "traefik.http.services.minio-api.loadbalancer.server.port=9000"
+      - "traefik.http.routers.minio-api.service=minio-api"
+      - "traefik.http.services.minio-api.loadbalancer.passHostHeader=true"
+      # Console
       - "traefik.http.routers.minio-console.entrypoints=web"
-      - "traefik.http.routers.minio-console.service=minio-console-service"
-      - "traefik.http.services.minio-console-service.loadbalancer.server.port=9001"
+      - "traefik.http.routers.minio-console.rule=Host(`minio-console.flowloom.com`)"
+      - "traefik.http.routers.minio-console.service=minio-console"
+      - "traefik.http.services.minio-console.loadbalancer.server.port=9001"
+      - "traefik.http.routers.minio-console.service=minio-console"
+      - "traefik.http.services.minio-console.loadbalancer.passHostHeader=true"
 
   minio-init:
     image: minio/mc
