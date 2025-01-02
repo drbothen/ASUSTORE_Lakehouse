@@ -26,13 +26,13 @@ services:
     image: minio/mc
     depends_on:
       - minio
-    entrypoint: /bin/sh
+    entrypoint: ""
     environment:
       MINIO_BUCKET: "mybucket"
       MINIO_ACCESS_KEY: ${ASUSTORE_MINIO_ROOT_USER}
       MINIO_SECRET_KEY: ${ASUSTORE_MINIO_ROOT_PASSWORD}
     command: >
-      -c "
+      sh -c "
       env;
       echo 'Access Key - $MINIO_ACCESS_KEY';
       echo 'Secret Key - $MINIO_SECRET_KEY';
