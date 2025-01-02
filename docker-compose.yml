@@ -23,7 +23,7 @@ services:
       - intro-network
 
   init:
-    image: minio/mc
+    image: ubuntu:latest
     depends_on:
       - minio
     entrypoint: ""
