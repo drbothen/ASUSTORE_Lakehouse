@@ -190,8 +190,8 @@ services:
     #command: "start --tunnel" # Optional, if you want to use the n8n hosted reverse tunnel for receiving webhooks
     ports:
       - "${LH_N8N_CLIENT_ENDPOINT_PORT:-5678}:5678"
-    environment:
-      - NODE_FUNCTION_ALLOW_EXTERNAL=*
+#    environment:
+#      - NODE_FUNCTION_ALLOW_EXTERNAL=*
     volumes:
       - /volume1/Docker/n8n/data:/home/node/.n8n
       - /volume1/Docker/n8n/files:/files
