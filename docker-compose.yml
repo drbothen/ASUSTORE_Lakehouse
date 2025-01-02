@@ -279,11 +279,13 @@ services:
       - NODE_FUNCTION_ALLOW_EXTERNAL=*
       - N8N_SECURE_COOKIE=false
       - N8N_WEBHOOK_URL=http://n8n.flowloom.com
+      - WEBHOOK_URL=http://n8n.flowloom.com
       - N8N_ENDPOINT_REST=rest
       - N8N_ENDPOINT_WEBHOOK=webhook
       - N8N_ENDPOINT_WEBHOOK_TEST=webhook-test
       - N8N_PROTOCOL=http
       - N8N_PORT=80
+      - N8N_PROXY_HOPS=1
     volumes:
       - /volume1/Docker/n8n/data:/home/node/.n8n
       - /volume1/Docker/n8n/files:/files
@@ -303,11 +305,11 @@ services:
       - "traefik.http.routers.n8n.service=n8n"
       - "traefik.http.services.n8n.loadbalancer.server.port=80"
       - "traefik.http.services.n8n.loadbalancer.passHostHeader=true"
-#      # Websocket support
-#      - "traefik.http.middlewares.n8n-websecure-headers.headers.customRequestHeaders.X-Forwarded-Proto=http"
-#      - "traefik.http.routers.n8n.middlewares=n8n-websecure-headers"
-#      # Increase timeouts for long-running workflows
-#      - "traefik.http.middlewares.n8n-timeouts.forwardauth.requestTimeout=300"
+      # Websocket support
+      - "traefik.http.middlewares.n8n-websecure-headers.headers.customRequestHeaders.X-Forwarded-Proto=http"
+      - "traefik.http.routers.n8n.middlewares=n8n-websecure-headers"
+      # Increase timeouts for long-running workflows
+      - "traefik.http.middlewares.n8n-timeouts.forwardauth.requestTimeout=300"
 
 networks:
   intro-network:
