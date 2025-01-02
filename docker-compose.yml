@@ -28,7 +28,8 @@ services:
   minio-init:
     image: minio/mc
     depends_on:
-      - minio
+      minio:
+        condition: service_healthy
     entrypoint: /bin/bash
     environment:
       MINIO_BUCKETS: ${ASUSTORE_MINIO_DEFAULT_BUCKETS} # Comma-separated list of buckets
