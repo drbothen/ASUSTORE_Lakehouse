@@ -100,7 +100,7 @@ services:
       retries: 3
     volumes:
       - ./minio:/minio/scripts:ro
-    command: /minio/scripts/minio-init.sh
+    command: ls -lanh /minio/scripts
     network_mode: "service:minio"
     restart: on-failure:3
 
