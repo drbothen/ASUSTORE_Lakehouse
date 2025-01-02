@@ -33,7 +33,7 @@ services:
       MINIO_SECRET_KEY: ${ASUSTORE_MINIO_ROOT_PASSWORD}
     command: >
       -c "
-      echo 'Buckets: $(printenv MINIO_BUCKETS)';
+      echo 'Buckets: $$MINIO_BUCKETS)';
       echo 'Access Key: $(printenv MINIO_ACCESS_KEY)';
       echo 'Secret Key: $(printenv MINIO_SECRET_KEY)';
       echo 'Check if MinIO is up';
@@ -48,10 +48,10 @@ services:
       IFS=',' read -ra BUCKETS <<< \"$(printenv MINIO_BUCKETS)\";
       for BUCKET in \"\$${BUCKETS[@]}\"; do
         echo \"Processing bucket: $$BUCKET\";
-        if ! mc ls myminio/\$BUCKET > /dev/null 2>&1; then
-          mc mb myminio/\$BUCKET;
+        if ! mc ls myminio/\$$BUCKET > /dev/null 2>&1; then
+          mc mb myminio/\$$BUCKET;
         else
-          echo \"Bucket \$BUCKET already exists, skipping creation.\";
+          echo \"Bucket \$$BUCKET already exists, skipping creation.\";
         fi;
       done;
       "
