@@ -4,21 +4,22 @@ services:
     container_name: minio
     restart: unless-stopped
     environment:
-      MINIO_ROOT_USER: ${ASUSTORE_MINIO_ROOT_USER}
-      MINIO_ROOT_PASSWORD: ${ASUSTORE_MINIO_ROOT_PASSWORD}
-      MINIO_DOMAIN: ${ASUSTORE_MINIO_DOMAIN}
-      MINIO_DEFAULT_BUCKETS: ${ASUSTORE_MINIO_BUCKETS}
-#      MINIO_SERVER_URL: ${ASUSTORE_MINIO_SERVER_URL:-http://localhost:9000}
-#      MINIO_BROWSER_REDIRECT_URL: ${ASUSTORE_MINIO_BROWSER_URL:-http://localhost:9001}
-#      MINIO_API_CORS_ALLOW_ORIGIN: ${ASUSTORE_MINIO_CORS_ORIGIN:-"*"}
+      MINIO_ROOT_USER: ${LH_MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${LH_MINIO_ROOT_PASSWORD}
+      MINIO_DOMAIN: ${LH_MINIO_DOMAIN}
+      MINIO_DEFAULT_BUCKETS: ${LH_MINIO_BUCKETS}
+# TODO: Add these back in when we have a use case for them
+#      MINIO_SERVER_URL: ${LH_MINIO_SERVER_URL:-http://localhost:9000}
+#      MINIO_BROWSER_REDIRECT_URL: ${LH_MINIO_BROWSER_URL:-http://localhost:9001}
+#      MINIO_API_CORS_ALLOW_ORIGIN: ${LH_MINIO_CORS_ORIGIN:-"*"}
     user: "0:0"
     ports:
-      - "${ASUSTORE_MINIO_API_PORT:-9000}:9000"
-      - "${ASUSTORE_MINIO_CONSOLE_PORT:-9001}:9001"
+      - "${LH_MINIO_API_PORT:-9000}:9000"
+      - "${LH_MINIO_CONSOLE_PORT:-9001}:9001"
     volumes:
       - /volume1/Docker/minio/data:/data
       - /volume1/Docker/minio/config:/root/.minio
-    command: minio server /data --console-address ':${ASUSTORE_MINIO_CONSOLE_PORT:-9001}' --address ':${ASUSTORE_MINIO_API_PORT:-9000}'
+    command: minio server /data --console-address ':${LH_MINIO_CONSOLE_PORT:-9001}' --address ':${LH_MINIO_API_PORT:-9000}'
     healthcheck:
       test: ["CMD", "mc", "ready", "local"]
       interval: 30s
@@ -30,9 +31,9 @@ services:
     deploy:
       resources:
         limits:
-          memory: ${ASUSTORE_MINIO_MEMORY_LIMIT:-2g}
+          memory: ${LH_MINIO_MEMORY_LIMIT:-2g}
         reservations:
-          memory: ${ASUSTORE_MINIO_MEMORY_RESERVATION:-1g}
+          memory: ${LH_MINIO_MEMORY_RESERVATION:-1g}
 
   minio-init:
     image: minio/mc
@@ -41,9 +42,14 @@ services:
         condition: service_healthy
     entrypoint: /bin/bash
     environment:
-      MINIO_BUCKETS: ${ASUSTORE_MINIO_DEFAULT_BUCKETS} # Comma-separated list of buckets
-      MINIO_ACCESS_KEY: ${ASUSTORE_MINIO_ROOT_USER}
-      MINIO_SECRET_KEY: ${ASUSTORE_MINIO_ROOT_PASSWORD}
+      MINIO_BUCKETS: ${LH_MINIO_DEFAULT_BUCKETS} # Comma-separated list of buckets
+      MINIO_ACCESS_KEY: ${LH_MINIO_ROOT_USER}
+      MINIO_SECRET_KEY: ${LH_MINIO_ROOT_PASSWORD}
+      # Optional configurations with defaults
+      BUCKET_VERSIONING: ${LH_MINIO_BUCKET_VERSIONING:-false}
+      BUCKET_PUBLIC_ACCESS: ${LH_MINIO_BUCKET_PUBLIC_ACCESS:-false}
+      MAX_RETRY_ATTEMPTS: ${LH_MINIO_INIT_MAX_RETRIES:-30}
+      RETRY_INTERVAL: ${LH_MINIO_INIT_RETRY_INTERVAL:-2}
     command: >
       -c "
       echo ""Buckets: $$MINIO_BUCKETS"";
