@@ -261,7 +261,7 @@ services:
       - "traefik.http.routers.n8n.entrypoints=websecure"
       - "traefik.http.routers.n8n.rule=Host(`n8n.flowloom.com`)"
       - "traefik.http.routers.n8n.tls=true"
-      - "traefik.http.routers.n8n.tls.certresolver=myresolver"
+      - "traefik.http.routers.n8n.tls.certresolver=letsencrypt"
       # Custom headers and timeouts
       - "traefik.http.middlewares.n8n-websecure-headers.headers.customRequestHeaders.X-Forwarded-Proto=https"
 #      - "traefik.http.middlewares.n8n-timeouts.forwardauth.requestTimeout=300"
