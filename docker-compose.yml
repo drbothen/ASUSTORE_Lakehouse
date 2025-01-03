@@ -26,7 +26,7 @@ services:
       - "--entrypoints.ping.address=:8082"
       - "--providers.docker.network=intro-network"
       # HTTPS Configuration
-      - "--certificatesresolvers.letsencrypt.acme.email=josh.magady@gmail.com"
+      - "--certificatesresolvers.letsencrypt.acme.email=${LH_TRAEFIK_LETSENCRYPT_EMAIL}"
       - "--certificatesresolvers.letsencrypt.acme.storage=/acme/acme.json"
       - "--certificatesresolvers.letsencrypt.acme.httpChallenge=true"
       - "--certificatesresolvers.letsencrypt.acme.httpChallenge.entrypoint=web"
