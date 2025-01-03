@@ -48,10 +48,10 @@ services:
       - "traefik.http.middlewares.acme-whitelist.ipwhitelist.sourcerange=0.0.0.0/0"
 
       # ACME challenge routing
-      - "traefik.http.routers.acme.rule=PathPrefix(`/.well-known/acme-challenge/`)"
-      - "traefik.http.routers.acme.entrypoints=web"
-      - "traefik.http.routers.acme.middlewares=acme-whitelist@docker"
-      - "traefik.http.routers.acme.priority=100"
+#      - "traefik.http.routers.acme.rule=PathPrefix(`/.well-known/acme-challenge/`)"
+#      - "traefik.http.routers.acme.entrypoints=web"
+#      - "traefik.http.routers.acme.middlewares=acme-whitelist@docker"
+#      - "traefik.http.routers.acme.priority=100"
 
       # Secure the dashboard
       - "traefik.http.routers.dashboard.rule=Host(`traefik.flowloom.com`)"
