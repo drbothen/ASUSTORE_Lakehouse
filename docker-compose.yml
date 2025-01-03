@@ -181,7 +181,7 @@ services:
       - "traefik.http.routers.nessie.entrypoints=websecure"
       - "traefik.http.routers.nessie.rule=Host(`nessie.flowloom.com`)"
       - "traefik.http.routers.nessie.tls=true"
-      - "traefik.http.routers.nessie.tls.certresolver=myresolver"
+      - "traefik.http.routers.nessie.tls.certresolver=letsencryptresolver"
       - "traefik.http.routers.nessie.middlewares=ip-whitelist@docker"
       - "traefik.http.services.nessie.loadbalancer.server.port=19120"
       - "traefik.http.services.nessie.loadbalancer.passHostHeader=true"
