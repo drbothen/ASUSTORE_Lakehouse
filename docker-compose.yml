@@ -10,7 +10,7 @@ services:
       - "8082:8082" # Ping endpoint
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /volume1/Docker/traefik/acme.json:/acme.json
+      - /volume1/Docker/traefik/acme:/acme
       - /volume1/Docker/traefik/config:/etc/traefik
     command:
       - "--api.insecure=true"  # Enable dashboard without auth - change in production
@@ -27,8 +27,9 @@ services:
       - "--providers.docker.network=intro-network"
       # HTTPS Configuration
       - "--certificatesresolvers.letsencrypt.acme.email=josh.magady@gmail.com"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/acme/acme.json"
       - "--certificatesresolvers.letsencrypt.acme.httpChallenge=true"
-      - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
+      - "--certificatesresolvers.letsencrypt.acme.httpChallenge.entrypoint=web"
       # HTTP to HTTPS redirect
       - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
       - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
