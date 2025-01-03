@@ -264,8 +264,8 @@ services:
       - "traefik.http.routers.n8n.tls.certresolver=myresolver"
       # Custom headers and timeouts
       - "traefik.http.middlewares.n8n-websecure-headers.headers.customRequestHeaders.X-Forwarded-Proto=https"
-      - "traefik.http.middlewares.n8n-timeouts.forwardauth.requestTimeout=300"
-      - "traefik.http.routers.n8n.middlewares=ip-whitelist@docker,n8n-websecure-headers@docker,n8n-timeouts@docker"
+#      - "traefik.http.middlewares.n8n-timeouts.forwardauth.requestTimeout=300"
+#      - "traefik.http.routers.n8n.middlewares=ip-whitelist@docker,n8n-websecure-headers@docker,n8n-timeouts@docker"
       - "traefik.http.services.n8n.loadbalancer.server.port=80"
       - "traefik.http.services.n8n.loadbalancer.passHostHeader=true"
 
