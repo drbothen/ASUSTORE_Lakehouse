@@ -271,3 +271,4 @@ services:
 
 networks:
   intro-network:
+    name: intro-network
