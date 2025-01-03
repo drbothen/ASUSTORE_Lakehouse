@@ -31,8 +31,8 @@ services:
       - "--certificatesresolvers.myresolver.acme.email=josh.magady@gmail.com"
       - "--certificatesresolvers.myresolver.acme.storage=/acme.json"
       # HTTP to HTTPS redirect
-      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
-      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+#      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+#      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
     networks:
       - intro-network
     healthcheck:
