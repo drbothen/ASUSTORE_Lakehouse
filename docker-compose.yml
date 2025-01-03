@@ -26,9 +26,9 @@ services:
       - "--entrypoints.ping.address=:8082"
       - "--providers.docker.network=intro-network"
       # HTTPS Configuration
-      - "--certificatesresolvers.letsencryptresolver.acme.email=josh.magady@gmail.com"
-      - "--certificatesresolvers.letsencryptresolver.acme.httpChallenge=true"
-      - "--certificatesresolvers.letsencryptresolver.acme.httpchallenge.entrypoint=web"
+      - "--certificatesresolvers.letsencrypt.acme.email=josh.magady@gmail.com"
+      - "--certificatesresolvers.letsencrypt.acme.httpChallenge=true"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
       # HTTP to HTTPS redirect
       - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
       - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
@@ -181,7 +181,7 @@ services:
       - "traefik.http.routers.nessie.entrypoints=websecure"
       - "traefik.http.routers.nessie.rule=Host(`nessie.flowloom.com`)"
       - "traefik.http.routers.nessie.tls=true"
-      - "traefik.http.routers.nessie.tls.certresolver=letsencryptresolver"
+      - "traefik.http.routers.nessie.tls.certresolver=letsencrypt"
       - "traefik.http.routers.nessie.middlewares=ip-whitelist@docker"
       - "traefik.http.services.nessie.loadbalancer.server.port=19120"
       - "traefik.http.services.nessie.loadbalancer.passHostHeader=true"
