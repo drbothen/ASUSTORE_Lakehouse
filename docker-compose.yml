@@ -44,8 +44,8 @@ services:
     labels:
       # Define middlewares
       - "traefik.enable=true"
-      - "traefik.http.middlewares.ip-whitelist.ipwhitelist.sourcerange=192.168.0.0/16,172.16.0.0/12,10.0.0.0/8"
-      - "traefik.http.middlewares.acme-whitelist.ipwhitelist.sourcerange=0.0.0.0/0"
+      - "traefik.http.middlewares.IPAllowList.ipallowlist.sourcerange=192.168.0.0/16,172.16.0.0/12,10.0.0.0/8"
+      - "traefik.http.middlewares.acme-whitelist.ipallowlist.sourcerange=0.0.0.0/0"
 
       # ACME challenge routing
 #      - "traefik.http.routers.acme.rule=PathPrefix(`/.well-known/acme-challenge/`)"
@@ -98,7 +98,7 @@ services:
       - "traefik.http.routers.minio-api.rule=Host(`minio.flowloom.com`)"
       - "traefik.http.routers.minio-api.tls=true"
       - "traefik.http.routers.minio-api.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.minio-api.middlewares=ip-whitelist@docker"
+      - "traefik.http.routers.minio-api.middlewares=IPAllowList@docker"
       - "traefik.http.services.minio-api.loadbalancer.server.port=9000"
       - "traefik.http.services.minio-api.loadbalancer.passHostHeader=true"
       - "traefik.http.routers.minio-api.service=minio-api"
@@ -107,7 +107,7 @@ services:
       - "traefik.http.routers.minio-console.rule=Host(`minio-console.flowloom.com`)"
       - "traefik.http.routers.minio-console.tls=true"
       - "traefik.http.routers.minio-console.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.minio-console.middlewares=ip-whitelist@docker"
+      - "traefik.http.routers.minio-console.middlewares=IPAllowList@docker"
       - "traefik.http.services.minio-console.loadbalancer.server.port=9001"
       - "traefik.http.services.minio-console.loadbalancer.passHostHeader=true"
       - "traefik.http.routers.minio-console.service=minio-console"
@@ -185,7 +185,7 @@ services:
       - "traefik.http.routers.nessie.rule=Host(`nessie.flowloom.com`)"
       - "traefik.http.routers.nessie.tls=true"
       - "traefik.http.routers.nessie.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.nessie.middlewares=ip-whitelist@docker"
+      - "traefik.http.routers.nessie.middlewares=IPAllowList@docker"
       - "traefik.http.services.nessie.loadbalancer.server.port=19120"
       - "traefik.http.services.nessie.loadbalancer.passHostHeader=true"
 
@@ -223,7 +223,7 @@ services:
       - "traefik.http.routers.dremio.rule=Host(`dremio.flowloom.com`)"
       - "traefik.http.routers.dremio.tls=true"
       - "traefik.http.routers.dremio.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.dremio.middlewares=ip-whitelist@docker"
+      - "traefik.http.routers.dremio.middlewares=IPAllowList@docker"
       - "traefik.http.services.dremio.loadbalancer.server.port=9047"
       - "traefik.http.services.dremio.loadbalancer.passHostHeader=true"
       # Client Port (ODBC/JDBC)
@@ -268,7 +268,7 @@ services:
       # Custom headers and timeouts
       - "traefik.http.middlewares.n8n-websecure-headers.headers.customRequestHeaders.X-Forwarded-Proto=https"
 #      - "traefik.http.middlewares.n8n-timeouts.forwardauth.requestTimeout=300"
-#      - "traefik.http.routers.n8n.middlewares=ip-whitelist@docker,n8n-websecure-headers@docker,n8n-timeouts@docker"
+      - "traefik.http.routers.n8n.middlewares=IPAllowList@docker"
       - "traefik.http.services.n8n.loadbalancer.server.port=80"
       - "traefik.http.services.n8n.loadbalancer.passHostHeader=true"
 
