@@ -26,13 +26,12 @@ services:
       - "--entrypoints.ping.address=:8082"
       - "--providers.docker.network=intro-network"
       # HTTPS Configuration
-      - "--certificatesresolvers.myresolver.acme.httpchallenge=true"
-      - "--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web"
-      - "--certificatesresolvers.myresolver.acme.email=josh.magady@gmail.com"
-      - "--certificatesresolvers.myresolver.acme.storage=/acme.json"
+      - "--certificatesresolvers.letsencryptresolver.acme.email=josh.magady@gmail.com"
+      - "--certificatesresolvers.letsencryptresolver.acme.httpChallenge=true"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
       # HTTP to HTTPS redirect
-#      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
-#      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
     networks:
       - intro-network
     healthcheck:
