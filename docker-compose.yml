@@ -28,7 +28,7 @@ services:
       # HTTPS Configuration
       - "--certificatesresolvers.letsencryptresolver.acme.email=josh.magady@gmail.com"
       - "--certificatesresolvers.letsencryptresolver.acme.httpChallenge=true"
-      - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
+      - "--certificatesresolvers.letsencryptresolver.acme.httpchallenge.entrypoint=web"
       # HTTP to HTTPS redirect
       - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
       - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
