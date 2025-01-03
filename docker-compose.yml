@@ -59,7 +59,7 @@ services:
       - "traefik.http.routers.dashboard.entrypoints=websecure"
       - "traefik.http.routers.dashboard.tls=true"
       - "traefik.http.routers.dashboard.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.dashboard.middlewares=ip-whitelist@docker"
+      - "traefik.http.routers.dashboard.middlewares=IPAllowList@docker"
 
   minio:
     image: minio/minio:RELEASE.2024-12-18T13-15-44Z
