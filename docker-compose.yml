@@ -225,10 +225,10 @@ services:
       - "traefik.http.services.dremio.loadbalancer.server.port=9047"
       - "traefik.http.services.dremio.loadbalancer.passHostHeader=true"
       # Client Port (ODBC/JDBC)
-      - "traefik.tcp.routers.dremio-client.entrypoints=dremio-client"
-      - "traefik.tcp.routers.dremio-client.rule=HostSNI(`*`)"
-      - "traefik.tcp.routers.dremio-client.service=dremio-client"
-      - "traefik.tcp.services.dremio-client.loadbalancer.server.port=31010"
+#      - "traefik.tcp.routers.dremio-client.entrypoints=dremio-client"
+#      - "traefik.tcp.routers.dremio-client.rule=HostSNI(`*`)"
+#      - "traefik.tcp.routers.dremio-client.service=dremio-client"
+#      - "traefik.tcp.services.dremio-client.loadbalancer.server.port=31010"
 
   n8n:
     image: n8nio/n8n:1.73.1
