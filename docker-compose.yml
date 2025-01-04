@@ -253,7 +253,7 @@ services:
     volumes:
       - /volume1/Docker/n8n/data:/home/node/.n8n
       - /volume1/Docker/n8n/files:/files
-    user: "0:0"
+#    user: "0:0"
     networks:
       - intro-network
     healthcheck:
