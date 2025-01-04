@@ -233,6 +233,7 @@ services:
 #      - "traefik.tcp.services.dremio-client.loadbalancer.server.port=31010"
 
   n8n:
+    # N8N wont persist data if you try and force it to run under root and it wont give you errors either
     image: n8nio/n8n:1.73.1
     container_name: n8n
     restart: unless-stopped
