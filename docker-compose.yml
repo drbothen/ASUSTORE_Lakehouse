@@ -248,12 +248,12 @@ services:
       - N8N_PORT=80
       - N8N_PROXY_HOPS=1
       - GENERIC_TIMEZONE=America/Chicago
-      - PUID=0
-      - PGID=0
+#      - PUID=0
+#      - PGID=0
     volumes:
       - /volume1/Docker/n8n/data:/home/node/.n8n
       - /volume1/Docker/n8n/files:/files
-    user: "0:0"
+#    user: "0:0"
     networks:
       - intro-network
     healthcheck:
