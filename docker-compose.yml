@@ -284,6 +284,30 @@ services:
       - "traefik.http.services.n8n.loadbalancer.server.port=80"
       - "traefik.http.services.n8n.loadbalancer.passHostHeader=true"
 
+  nocodb:
+    image: nocodb/nocodb:0.260.2
+    container_name: nocodb
+    restart: unless-stopped
+    volumes:
+      - /volume1/Docker/nocodb/data:/usr/app/data
+    networks:
+      - intro-network
+    healthcheck:
+      test: [ "CMD", "wget", "--spider", "--quiet", "http://localhost:8080/api/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.nocodb.entrypoints=websecure"
+      - "traefik.http.routers.nocodb.rule=Host(`nocodb.flowloom.com`)"
+      - "traefik.http.routers.nocodb.tls=true"
+      - "traefik.http.routers.nocodb.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.nocodb.middlewares=IPAllowList@docker"
+      - "traefik.http.services.nocodb.loadbalancer.server.port=8080"
+      - "traefik.http.services.nocodb.loadbalancer.passHostHeader=true"
+
 networks:
   intro-network:
     name: intro-network
