@@ -308,160 +308,160 @@ services:
       - "traefik.http.services.nocodb.loadbalancer.server.port=8080"
       - "traefik.http.services.nocodb.loadbalancer.passHostHeader=true"
 
-  langfuse-db:
-    image: postgres:15
-    container_name: langfuse-db
-    restart: unless-stopped
-    environment:
-      POSTGRES_USER: ${LH_LANGFUSE_DB_USER}
-      POSTGRES_PASSWORD: ${LH_LANGFUSE_DB_PASSWORD}
-      POSTGRES_DB: langfuse
-    volumes:
-      - /volume1/Docker/langfuse/postgres:/var/lib/postgresql/data
-    networks:
-      - intro-network
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 10s
-
-  langfuse-clickhouse:
-    image: clickhouse/clickhouse-server:latest
-    container_name: langfuse-clickhouse
-    restart: unless-stopped
-    user: "101:101"
-    environment:
-      CLICKHOUSE_DB: default
-      CLICKHOUSE_USER: ${LH_LANGFUSE_CLICKHOUSE_USER}
-      CLICKHOUSE_PASSWORD: ${LH_LANGFUSE_CLICKHOUSE_PASSWORD}
-    volumes:
-      - /volume1/Docker/langfuse/clickhouse/data:/var/lib/clickhouse
-      - /volume1/Docker/langfuse/clickhouse/logs:/var/log/clickhouse-server
-    networks:
-      - intro-network
-    healthcheck:
-      test: wget --no-verbose --tries=1 --spider http://localhost:8123/ping || exit 1
-      interval: 5s
-      timeout: 5s
-      retries: 10
-      start_period: 1s
-
-  langfuse-redis:
-    image: redis:7
-    container_name: langfuse-redis
-    restart: unless-stopped
-    command: --requirepass ${LH_LANGFUSE_REDIS_PASSWORD}
-    volumes:
-      - /volume1/Docker/langfuse/redis:/data
-    networks:
-      - intro-network
-    healthcheck:
-      test: ["CMD", "redis-cli", "-a", "$$LH_LANGFUSE_REDIS_PASSWORD", "ping"]
-      interval: 3s
-      timeout: 10s
-      retries: 10
-
-  langfuse-worker:
-    image: langfuse/langfuse-worker:3
-    container_name: langfuse-worker
-    restart: unless-stopped
-    depends_on:
-      langfuse-db:
-        condition: service_healthy
-      minio:
-        condition: service_healthy
-      langfuse-redis:
-        condition: service_healthy
-      langfuse-clickhouse:
-        condition: service_healthy
-    environment:
-      DATABASE_URL: postgresql://${LH_LANGFUSE_DB_USER}:${LH_LANGFUSE_DB_PASSWORD}@langfuse-db:5432/langfuse
-      SALT: ${LH_LANGFUSE_SALT}
-      ENCRYPTION_KEY: ${LH_LANGFUSE_ENCRYPTION_KEY}
-      TELEMETRY_ENABLED: ${LH_LANGFUSE_TELEMETRY_ENABLED:-false}
-      LANGFUSE_ENABLE_EXPERIMENTAL_FEATURES: ${LH_LANGFUSE_EXPERIMENTAL:-false}
-      CLICKHOUSE_MIGRATION_URL: clickhouse://${LH_LANGFUSE_CLICKHOUSE_USER}:${LH_LANGFUSE_CLICKHOUSE_PASSWORD}@langfuse-clickhouse:9000
-      CLICKHOUSE_URL: http://langfuse-clickhouse:8123
-      CLICKHOUSE_USER: ${LH_LANGFUSE_CLICKHOUSE_USER}
-      CLICKHOUSE_PASSWORD: ${LH_LANGFUSE_CLICKHOUSE_PASSWORD}
-      LANGFUSE_S3_EVENT_UPLOAD_BUCKET: ${LH_LANGFUSE_S3_BUCKET:-langfuse}
-      LANGFUSE_S3_EVENT_UPLOAD_REGION: auto
-      LANGFUSE_S3_EVENT_UPLOAD_ACCESS_KEY_ID: ${LH_MINIO_ROOT_USER}
-      LANGFUSE_S3_EVENT_UPLOAD_SECRET_ACCESS_KEY: ${LH_MINIO_ROOT_PASSWORD}
-      LANGFUSE_S3_EVENT_UPLOAD_ENDPOINT: http://minio:9000
-      LANGFUSE_S3_EVENT_UPLOAD_FORCE_PATH_STYLE: true
-      LANGFUSE_S3_EVENT_UPLOAD_PREFIX: events/
-      LANGFUSE_S3_MEDIA_UPLOAD_BUCKET: ${LH_LANGFUSE_S3_BUCKET:-langfuse}
-      LANGFUSE_S3_MEDIA_UPLOAD_REGION: auto
-      LANGFUSE_S3_MEDIA_UPLOAD_ACCESS_KEY_ID: ${LH_MINIO_ROOT_USER}
-      LANGFUSE_S3_MEDIA_UPLOAD_SECRET_ACCESS_KEY: ${LH_MINIO_ROOT_PASSWORD}
-      LANGFUSE_S3_MEDIA_UPLOAD_ENDPOINT: http://minio:9000
-      LANGFUSE_S3_MEDIA_UPLOAD_FORCE_PATH_STYLE: true
-      LANGFUSE_S3_MEDIA_UPLOAD_PREFIX: media/
-      REDIS_HOST: langfuse-redis
-      REDIS_PORT: 6379
-      REDIS_AUTH: ${LH_LANGFUSE_REDIS_PASSWORD}
-    networks:
-      - intro-network
-
-  langfuse-web:
-    image: langfuse/langfuse:3
-    container_name: langfuse-web
-    restart: unless-stopped
-    depends_on:
-      langfuse-db:
-        condition: service_healthy
-      minio:
-        condition: service_healthy
-      langfuse-redis:
-        condition: service_healthy
-      langfuse-clickhouse:
-        condition: service_healthy
-    environment:
-      DATABASE_URL: postgresql://${LH_LANGFUSE_DB_USER}:${LH_LANGFUSE_DB_PASSWORD}@langfuse-db:5432/langfuse
-      SALT: ${LH_LANGFUSE_SALT}
-      ENCRYPTION_KEY: ${LH_LANGFUSE_ENCRYPTION_KEY}
-      NEXTAUTH_URL: https://langfuse.flowloom.com
-      NEXTAUTH_SECRET: ${LH_LANGFUSE_NEXTAUTH_SECRET}
-      TELEMETRY_ENABLED: ${LH_LANGFUSE_TELEMETRY_ENABLED:-false}
-      LANGFUSE_ENABLE_EXPERIMENTAL_FEATURES: ${LH_LANGFUSE_EXPERIMENTAL:-false}
-      CLICKHOUSE_MIGRATION_URL: clickhouse://${LH_LANGFUSE_CLICKHOUSE_USER}:${LH_LANGFUSE_CLICKHOUSE_PASSWORD}@langfuse-clickhouse:9000
-      CLICKHOUSE_URL: http://langfuse-clickhouse:8123
-      CLICKHOUSE_USER: ${LH_LANGFUSE_CLICKHOUSE_USER}
-      CLICKHOUSE_PASSWORD: ${LH_LANGFUSE_CLICKHOUSE_PASSWORD}
-      LANGFUSE_S3_EVENT_UPLOAD_BUCKET: ${LH_LANGFUSE_S3_BUCKET:-langfuse}
-      LANGFUSE_S3_EVENT_UPLOAD_REGION: auto
-      LANGFUSE_S3_EVENT_UPLOAD_ACCESS_KEY_ID: ${LH_MINIO_ROOT_USER}
-      LANGFUSE_S3_EVENT_UPLOAD_SECRET_ACCESS_KEY: ${LH_MINIO_ROOT_PASSWORD}
-      LANGFUSE_S3_EVENT_UPLOAD_ENDPOINT: http://minio:9000
-      LANGFUSE_S3_EVENT_UPLOAD_FORCE_PATH_STYLE: true
-      LANGFUSE_S3_EVENT_UPLOAD_PREFIX: events/
-      LANGFUSE_S3_MEDIA_UPLOAD_BUCKET: ${LH_LANGFUSE_S3_BUCKET:-langfuse}
-      LANGFUSE_S3_MEDIA_UPLOAD_REGION: auto
-      LANGFUSE_S3_MEDIA_UPLOAD_ACCESS_KEY_ID: ${LH_MINIO_ROOT_USER}
-      LANGFUSE_S3_MEDIA_UPLOAD_SECRET_ACCESS_KEY: ${LH_MINIO_ROOT_PASSWORD}
-      LANGFUSE_S3_MEDIA_UPLOAD_ENDPOINT: http://minio:9000
-      LANGFUSE_S3_MEDIA_UPLOAD_FORCE_PATH_STYLE: true
-      LANGFUSE_S3_MEDIA_UPLOAD_PREFIX: media/
-      REDIS_HOST: langfuse-redis
-      REDIS_PORT: 6379
-      REDIS_AUTH: ${LH_LANGFUSE_REDIS_PASSWORD}
-      LANGFUSE_INIT_ORG_NAME: ${LH_LANGFUSE_INIT_ORG_NAME}
-      LANGFUSE_INIT_USER_EMAIL: ${LH_LANGFUSE_INIT_USER_EMAIL}
-      LANGFUSE_INIT_USER_PASSWORD: ${LH_LANGFUSE_INIT_USER_PASSWORD}
-    networks:
-      - intro-network
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.langfuse.entrypoints=websecure"
-      - "traefik.http.routers.langfuse.rule=Host(`langfuse.flowloom.com`)"
-      - "traefik.http.routers.langfuse.tls=true"
-      - "traefik.http.routers.langfuse.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.langfuse.middlewares=IPAllowList@docker"
-      - "traefik.http.services.langfuse.loadbalancer.server.port=3000"
-      - "traefik.http.services.langfuse.loadbalancer.passHostHeader=true"
+#  langfuse-db:
+#    image: postgres:15
+#    container_name: langfuse-db
+#    restart: unless-stopped
+#    environment:
+#      POSTGRES_USER: ${LH_LANGFUSE_DB_USER}
+#      POSTGRES_PASSWORD: ${LH_LANGFUSE_DB_PASSWORD}
+#      POSTGRES_DB: langfuse
+#    volumes:
+#      - /volume1/Docker/langfuse/postgres:/var/lib/postgresql/data
+#    networks:
+#      - intro-network
+#    healthcheck:
+#      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 5
+#      start_period: 10s
+#
+#  langfuse-clickhouse:
+#    image: clickhouse/clickhouse-server:latest
+#    container_name: langfuse-clickhouse
+#    restart: unless-stopped
+#    user: "101:101"
+#    environment:
+#      CLICKHOUSE_DB: default
+#      CLICKHOUSE_USER: ${LH_LANGFUSE_CLICKHOUSE_USER}
+#      CLICKHOUSE_PASSWORD: ${LH_LANGFUSE_CLICKHOUSE_PASSWORD}
+#    volumes:
+#      - /volume1/Docker/langfuse/clickhouse/data:/var/lib/clickhouse
+#      - /volume1/Docker/langfuse/clickhouse/logs:/var/log/clickhouse-server
+#    networks:
+#      - intro-network
+#    healthcheck:
+#      test: wget --no-verbose --tries=1 --spider http://localhost:8123/ping || exit 1
+#      interval: 5s
+#      timeout: 5s
+#      retries: 10
+#      start_period: 1s
+#
+#  langfuse-redis:
+#    image: redis:7
+#    container_name: langfuse-redis
+#    restart: unless-stopped
+#    command: --requirepass ${LH_LANGFUSE_REDIS_PASSWORD}
+#    volumes:
+#      - /volume1/Docker/langfuse/redis:/data
+#    networks:
+#      - intro-network
+#    healthcheck:
+#      test: ["CMD", "redis-cli", "-a", "$$LH_LANGFUSE_REDIS_PASSWORD", "ping"]
+#      interval: 3s
+#      timeout: 10s
+#      retries: 10
+#
+#  langfuse-worker:
+#    image: langfuse/langfuse-worker:3
+#    container_name: langfuse-worker
+#    restart: unless-stopped
+#    depends_on:
+#      langfuse-db:
+#        condition: service_healthy
+#      minio:
+#        condition: service_healthy
+#      langfuse-redis:
+#        condition: service_healthy
+#      langfuse-clickhouse:
+#        condition: service_healthy
+#    environment:
+#      DATABASE_URL: postgresql://${LH_LANGFUSE_DB_USER}:${LH_LANGFUSE_DB_PASSWORD}@langfuse-db:5432/langfuse
+#      SALT: ${LH_LANGFUSE_SALT}
+#      ENCRYPTION_KEY: ${LH_LANGFUSE_ENCRYPTION_KEY}
+#      TELEMETRY_ENABLED: ${LH_LANGFUSE_TELEMETRY_ENABLED:-false}
+#      LANGFUSE_ENABLE_EXPERIMENTAL_FEATURES: ${LH_LANGFUSE_EXPERIMENTAL:-false}
+#      CLICKHOUSE_MIGRATION_URL: clickhouse://${LH_LANGFUSE_CLICKHOUSE_USER}:${LH_LANGFUSE_CLICKHOUSE_PASSWORD}@langfuse-clickhouse:9000
+#      CLICKHOUSE_URL: http://langfuse-clickhouse:8123
+#      CLICKHOUSE_USER: ${LH_LANGFUSE_CLICKHOUSE_USER}
+#      CLICKHOUSE_PASSWORD: ${LH_LANGFUSE_CLICKHOUSE_PASSWORD}
+#      LANGFUSE_S3_EVENT_UPLOAD_BUCKET: ${LH_LANGFUSE_S3_BUCKET:-langfuse}
+#      LANGFUSE_S3_EVENT_UPLOAD_REGION: auto
+#      LANGFUSE_S3_EVENT_UPLOAD_ACCESS_KEY_ID: ${LH_MINIO_ROOT_USER}
+#      LANGFUSE_S3_EVENT_UPLOAD_SECRET_ACCESS_KEY: ${LH_MINIO_ROOT_PASSWORD}
+#      LANGFUSE_S3_EVENT_UPLOAD_ENDPOINT: http://minio:9000
+#      LANGFUSE_S3_EVENT_UPLOAD_FORCE_PATH_STYLE: true
+#      LANGFUSE_S3_EVENT_UPLOAD_PREFIX: events/
+#      LANGFUSE_S3_MEDIA_UPLOAD_BUCKET: ${LH_LANGFUSE_S3_BUCKET:-langfuse}
+#      LANGFUSE_S3_MEDIA_UPLOAD_REGION: auto
+#      LANGFUSE_S3_MEDIA_UPLOAD_ACCESS_KEY_ID: ${LH_MINIO_ROOT_USER}
+#      LANGFUSE_S3_MEDIA_UPLOAD_SECRET_ACCESS_KEY: ${LH_MINIO_ROOT_PASSWORD}
+#      LANGFUSE_S3_MEDIA_UPLOAD_ENDPOINT: http://minio:9000
+#      LANGFUSE_S3_MEDIA_UPLOAD_FORCE_PATH_STYLE: true
+#      LANGFUSE_S3_MEDIA_UPLOAD_PREFIX: media/
+#      REDIS_HOST: langfuse-redis
+#      REDIS_PORT: 6379
+#      REDIS_AUTH: ${LH_LANGFUSE_REDIS_PASSWORD}
+#    networks:
+#      - intro-network
+#
+#  langfuse-web:
+#    image: langfuse/langfuse:3
+#    container_name: langfuse-web
+#    restart: unless-stopped
+#    depends_on:
+#      langfuse-db:
+#        condition: service_healthy
+#      minio:
+#        condition: service_healthy
+#      langfuse-redis:
+#        condition: service_healthy
+#      langfuse-clickhouse:
+#        condition: service_healthy
+#    environment:
+#      DATABASE_URL: postgresql://${LH_LANGFUSE_DB_USER}:${LH_LANGFUSE_DB_PASSWORD}@langfuse-db:5432/langfuse
+#      SALT: ${LH_LANGFUSE_SALT}
+#      ENCRYPTION_KEY: ${LH_LANGFUSE_ENCRYPTION_KEY}
+#      NEXTAUTH_URL: https://langfuse.flowloom.com
+#      NEXTAUTH_SECRET: ${LH_LANGFUSE_NEXTAUTH_SECRET}
+#      TELEMETRY_ENABLED: ${LH_LANGFUSE_TELEMETRY_ENABLED:-false}
+#      LANGFUSE_ENABLE_EXPERIMENTAL_FEATURES: ${LH_LANGFUSE_EXPERIMENTAL:-false}
+#      CLICKHOUSE_MIGRATION_URL: clickhouse://${LH_LANGFUSE_CLICKHOUSE_USER}:${LH_LANGFUSE_CLICKHOUSE_PASSWORD}@langfuse-clickhouse:9000
+#      CLICKHOUSE_URL: http://langfuse-clickhouse:8123
+#      CLICKHOUSE_USER: ${LH_LANGFUSE_CLICKHOUSE_USER}
+#      CLICKHOUSE_PASSWORD: ${LH_LANGFUSE_CLICKHOUSE_PASSWORD}
+#      LANGFUSE_S3_EVENT_UPLOAD_BUCKET: ${LH_LANGFUSE_S3_BUCKET:-langfuse}
+#      LANGFUSE_S3_EVENT_UPLOAD_REGION: auto
+#      LANGFUSE_S3_EVENT_UPLOAD_ACCESS_KEY_ID: ${LH_MINIO_ROOT_USER}
+#      LANGFUSE_S3_EVENT_UPLOAD_SECRET_ACCESS_KEY: ${LH_MINIO_ROOT_PASSWORD}
+#      LANGFUSE_S3_EVENT_UPLOAD_ENDPOINT: http://minio:9000
+#      LANGFUSE_S3_EVENT_UPLOAD_FORCE_PATH_STYLE: true
+#      LANGFUSE_S3_EVENT_UPLOAD_PREFIX: events/
+#      LANGFUSE_S3_MEDIA_UPLOAD_BUCKET: ${LH_LANGFUSE_S3_BUCKET:-langfuse}
+#      LANGFUSE_S3_MEDIA_UPLOAD_REGION: auto
+#      LANGFUSE_S3_MEDIA_UPLOAD_ACCESS_KEY_ID: ${LH_MINIO_ROOT_USER}
+#      LANGFUSE_S3_MEDIA_UPLOAD_SECRET_ACCESS_KEY: ${LH_MINIO_ROOT_PASSWORD}
+#      LANGFUSE_S3_MEDIA_UPLOAD_ENDPOINT: http://minio:9000
+#      LANGFUSE_S3_MEDIA_UPLOAD_FORCE_PATH_STYLE: true
+#      LANGFUSE_S3_MEDIA_UPLOAD_PREFIX: media/
+#      REDIS_HOST: langfuse-redis
+#      REDIS_PORT: 6379
+#      REDIS_AUTH: ${LH_LANGFUSE_REDIS_PASSWORD}
+#      LANGFUSE_INIT_ORG_NAME: ${LH_LANGFUSE_INIT_ORG_NAME}
+#      LANGFUSE_INIT_USER_EMAIL: ${LH_LANGFUSE_INIT_USER_EMAIL}
+#      LANGFUSE_INIT_USER_PASSWORD: ${LH_LANGFUSE_INIT_USER_PASSWORD}
+#    networks:
+#      - intro-network
+#    labels:
+#      - "traefik.enable=true"
+#      - "traefik.http.routers.langfuse.entrypoints=websecure"
+#      - "traefik.http.routers.langfuse.rule=Host(`langfuse.flowloom.com`)"
+#      - "traefik.http.routers.langfuse.tls=true"
+#      - "traefik.http.routers.langfuse.tls.certresolver=letsencrypt"
+#      - "traefik.http.routers.langfuse.middlewares=IPAllowList@docker"
+#      - "traefik.http.services.langfuse.loadbalancer.server.port=3000"
+#      - "traefik.http.services.langfuse.loadbalancer.passHostHeader=true"
 
 networks:
   intro-network:
