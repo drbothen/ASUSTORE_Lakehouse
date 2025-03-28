@@ -62,7 +62,7 @@ services:
       - "traefik.http.routers.dashboard.middlewares=IPAllowList@docker"
 
   minio:
-    image: minio/minio:RELEASE.2024-12-18T13-15-44Z
+    image: minio/minio:RELEASE.2025-03-12T18-04-18Z
     container_name: minio
     restart: unless-stopped
     environment:
@@ -153,7 +153,7 @@ services:
     network_mode: "service:minio"
 
   nessie:
-    image: bitnami/nessie:0.101.3
+    image: bitnami/nessie:0.103.2
     container_name: nessie
     restart: unless-stopped
     user: "0:0"
@@ -234,7 +234,7 @@ services:
 
   n8n:
     # N8N wont persist data if you try and force it to run under root and it wont give you errors either
-    image: n8nio/n8n:1.73.1
+    image: n8nio/n8n:1.84.3
     container_name: n8n
     restart: unless-stopped
     environment:
