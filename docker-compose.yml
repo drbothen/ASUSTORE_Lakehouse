@@ -234,7 +234,7 @@ services:
 
   n8n:
     # N8N wont persist data if you try and force it to run under root and it wont give you errors either
-    image: n8nio/n8n:1.91.3
+    image: n8nio/n8n:1.102.0
     container_name: n8n
     restart: unless-stopped
     environment:
